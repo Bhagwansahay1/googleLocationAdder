@@ -38,27 +38,32 @@ const ConfirmLocation = ({ navigation }) => {
             );
         };
 
-        const fetchAddress = async (latitude, longitude) => {
-            try {
-                // Replace with your preferred reverse geocoding API
-                const response = await axios.get(
-                    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAP_API_KEY}`
-                );
-                const addressComponents = response.data.results[0].address_components;
-                const formattedAddress = response.data.results[0].formatted_address;
-
-                setAddress({
-                    main: addressComponents[0]?.long_name || 'Current Location',
-                    sub: formattedAddress,
-                });
-            } catch (error) {
-                console.error('Failed to fetch address:', error);
-                setAddress({ main: 'Unknown Location', sub: 'Unable to fetch address' });
-            }
-        };
-
         requestLocation();
     }, []);
+
+    const fetchAddress = async (latitude, longitude) => {
+        try {
+            const response = await axios.get(
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAP_API_KEY}`
+            );
+            const addressComponents = response.data.results[0].address_components;
+            const formattedAddress = response.data.results[0].formatted_address;
+
+            setAddress({
+                main: addressComponents[0]?.long_name || 'Order will be delivered here',
+                sub: formattedAddress || 'Move the pin to change location',
+            });
+        } catch (error) {
+            console.error('Failed to fetch address:', error);
+            setAddress({ main: 'Unknown Location', sub: 'Unable to fetch address' });
+        }
+    };
+
+    const handleMarkerDragEnd = (event) => {
+        const { latitude, longitude } = event.nativeEvent.coordinate;
+        setLocation({ latitude, longitude });
+        fetchAddress(latitude, longitude);
+    };
 
     if (!location) {
         return <Text style={styles.loadingText}>Fetching location...</Text>;
@@ -74,8 +79,19 @@ const ConfirmLocation = ({ navigation }) => {
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01,
                 }}
+                onPress={(e) => {
+                    const { latitude, longitude } = e.nativeEvent.coordinate;
+                    setLocation({ latitude, longitude });
+                    fetchAddress(latitude, longitude);
+                }}
             >
-                <Marker coordinate={location} title={address.main} />
+                <Marker
+                    coordinate={location}
+                    draggable
+                    title="Order will be delivered here"
+                    description="Move the pin to change location"
+                    onDragEnd={handleMarkerDragEnd}
+                />
             </MapView>
             <View style={styles.addressDetails}>
                 <Text style={styles.addressText}>{address.main}</Text>

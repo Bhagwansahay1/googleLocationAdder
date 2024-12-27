@@ -80,7 +80,7 @@ const AddAddressScreen = () => {
 
     const handleSelectAddress = (address) => {
         const { description, place_id } = address;
-        navigation.navigate("ConfirmLocation", {
+        navigation.navigate("Confirm Location", {
             addressText: description,
             placeId: place_id,
         });
