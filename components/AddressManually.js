@@ -14,6 +14,8 @@ import LocationPermissionBanner from "./LocationPremissionBanner";
 import CustomButton from "./CustomButton";
 import CustomCheckbox from "./CustomCheckbox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { useLocation } from "../context/LocationContext";
 
 const AddressManually = () => {
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
@@ -29,9 +31,11 @@ const AddressManually = () => {
         mobile: "",
         petName: "",
     });
+    const navigation = useNavigation();
+    const { locationPermissionGranted } = useLocation();
 
     const handleInputChange = (field, value, type = "address") => {
-        console.log("field==>>",field)
+        console.log("field==>>", field)
         if (type === "address") {
             setAddressDetails((prev) => ({ ...prev, [field]: value }));
 
@@ -39,7 +43,7 @@ const AddressManually = () => {
                 fetchCityAndState(value);
             }
         } else {
-            console.log("receiverDetails==>>",receiverDetails)
+            console.log("receiverDetails==>>", receiverDetails)
             setReceiverDetails((prev) => ({ ...prev, [field]: value }));
         }
     };
@@ -51,6 +55,9 @@ const AddressManually = () => {
         };
 
         try {
+            navigation.navigate("Confirm Location", {
+                addressData: addressDetails,
+            });
             await AsyncStorage.setItem("defaultAddress", JSON.stringify(fullData));
             Alert.alert("Success", "Address saved successfully!");
         } catch (error) {
@@ -82,7 +89,7 @@ const AddressManually = () => {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
             <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-                <LocationPermissionBanner />
+                {!locationPermissionGranted && <LocationPermissionBanner />}
                 <View style={styles.addressContainer}>
                     <AddressDetails addressInputs={addressDetails} handleInputChange={handleInputChange} />
                     <ReceiverDetails receiverInputs={receiverDetails} handleInputChange={handleInputChange} />

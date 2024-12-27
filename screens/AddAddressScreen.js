@@ -14,8 +14,9 @@ import { useNavigation } from "@react-navigation/native";
 import LocationPin from "../assets/icons/pin.svg";
 import SearchIcon from "../assets/icons/Search.svg";
 import LocationPermissionBanner from "../components/LocationPremissionBanner";
-import { GOOGLE_MAP_API_KEY } from "@env";
+import { GOOGLE_MAP_API_KEY, IP_GEO_API_KEY } from "@env";
 import AddressManually from "../components/AddressManually";
+import { useLocation } from "../context/LocationContext";
 
 const AddAddressScreen = () => {
     const [searchText, setSearchText] = useState("");
@@ -23,22 +24,27 @@ const AddAddressScreen = () => {
     const [userLocation, setUserLocation] = useState(null);
     const [isManually, setIsManually] = useState(false);
     const navigation = useNavigation();
+    const { locationPermissionGranted } = useLocation();
 
     useEffect(() => {
-        const fetchUserLocation = async () => {
-            try {
-                const response = await axios.get("https://ipapi.co/json/");
-                console.log(response,"response==>>")
-                if (response.data) {
-                    const { latitude, longitude } = response.data;
-                    setUserLocation({ latitude, longitude });
-                }
-            } catch (error) {
-                console.error("Error fetching user's location from IP:", error);
-            }
-        };
         fetchUserLocation();
     }, []);
+
+    const fetchUserLocation = async () => {
+        try {
+            const response = await axios.get(
+                `https://api.ipgeolocation.io/ipgeo?apiKey=${IP_GEO_API_KEY}`
+            );
+            if (response.data) {
+                console.log(response.data);
+                const { latitude, longitude } = response.data;
+                setUserLocation({ latitude: parseFloat(latitude), longitude: parseFloat(longitude) });
+            }
+        } catch (error) {
+            console.error('Error fetching user location by IP:', error);
+            alert('Unable to fetch location.');
+        }
+    };
 
     // Debounce function
     const debounce = (func, delay) => {
@@ -83,6 +89,7 @@ const AddAddressScreen = () => {
         navigation.navigate("Confirm Location", {
             addressText: description,
             placeId: place_id,
+            isAutocomplete: true,
         });
     };
 
@@ -92,7 +99,7 @@ const AddAddressScreen = () => {
             style={styles.container}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-            <LocationPermissionBanner />
+            {!locationPermissionGranted && <LocationPermissionBanner /> }
             <View style={styles.searchContainer}>
                 <SearchIcon />
                 <TextInput
