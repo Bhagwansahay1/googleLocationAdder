@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
@@ -7,17 +7,55 @@ import { GOOGLE_MAP_API_KEY } from '@env';
 import CustomButton from '../components/CustomButton';
 import LocationPin from '../assets/icons/mapPin.svg';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import HomeIcon from '../assets/icons/homeIcon.svg';
+import InputWithIcon from '../components/InputWithIcon';
+import BuildingIcon from '../assets/icons/buildingIcon.svg';
+import LandmarkIcon from '../assets/icons/landmarkIcon.svg';
+import UserIcon from '../assets/icons/userIcon.svg';
+import PhoneIcon from '../assets/icons/phoneIcon.svg';
+import PetNameIcon from '../assets/icons/petNameIcon.svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ConfirmLocation = ({ route, navigation }) => {
-  const { addressText, placeId, isAutocomplete, addressData } = route.params || {};
+  const { addressText, placeId, isAutocomplete, addressData, savedAddress } = route.params || {};
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState({ main: '', sub: '' });
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [selectedAddressType, setSelectedAddressType] = useState("Home");
+  const [addressDetails, setAddressDetails] = useState({
+    houseNumber: "",
+    buildingName: "",
+    landmark: "",
+  });
+  const [receiverDetails, setReceiverDetails] = useState({
+    receiverName: "",
+    receiverMobile: "",
+    petName: "",
+  });
+  const addressInputs = [
+    { placeholder: 'House/Flat no.', value: addressDetails.houseNumber, IconComponent: HomeIcon, onChangeText: (value) => setAddressDetails({ ...addressDetails, houseNumber: value }) },
+    { placeholder: 'Building name', value: addressDetails.buildingName, IconComponent: BuildingIcon, onChangeText: (value) => setAddressDetails({ ...addressDetails, buildingName: value }) },
+    { placeholder: 'Landmark', value: addressDetails.landmark, IconComponent: LandmarkIcon, onChangeText: (value) => setAddressDetails({ ...addressDetails, landmark: value }) },
+  ];
+
+  const receiverInputs = [
+    { placeholder: 'Your name', value: receiverDetails.receiverName, IconComponent: UserIcon, onChangeText: (value) => setReceiverDetails({ ...receiverDetails, receiverName: value }) },
+    { placeholder: 'Your mobile no.', value: receiverDetails.receiverMobile, IconComponent: PhoneIcon, onChangeText: (value) => setReceiverDetails({ ...receiverDetails, receiverMobile: value }) },
+    { placeholder: 'Your pet name', value: receiverDetails.petName, IconComponent: PetNameIcon, onChangeText: (value) => setReceiverDetails({ ...receiverDetails, petName: value }) },
+  ];
 
   const bottomSheetRef = useRef(null);
-  const snapPoints = useMemo(() => ['25%', '40%'], []); // Dynamic snap points
+  const snapPoints = useMemo(() => ['25%', '80%'], []);
 
   useEffect(() => {
-    if (isAutocomplete && placeId) {
+    if (savedAddress) {
+      const { main, sub, details, receiver, location } = savedAddress;
+      setAddress({ main, sub });
+      setAddressDetails(details || {});
+      setReceiverDetails(receiver || {});
+      setLocation(location);
+    }
+    else if (isAutocomplete && placeId) {
       fetchPlaceDetails(placeId);
     } else if (addressData) {
       fetchCoordinatesFromAddress(addressData);
@@ -55,9 +93,11 @@ const ConfirmLocation = ({ route, navigation }) => {
 
   const fetchAddress = async (latitude, longitude) => {
     try {
+      console.log(latitude, longitude, fetchAddress);
       const response = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAP_API_KEY}`
       );
+      console.log(response.data.results[0]?.address_components);
       const addressComponents = response.data.results[0]?.address_components || [];
       const formattedAddress = response.data.results[0]?.formatted_address || 'Unknown Location';
 
@@ -102,6 +142,39 @@ const ConfirmLocation = ({ route, navigation }) => {
     fetchAddress(latitude, longitude);
   };
 
+  const handleAddDetails = () => {
+    setShowAddressForm(true);
+    bottomSheetRef.current?.expand();
+  };
+
+  const handleSaveAddress = async () => {
+    const newAddress = {
+      main: address.main,
+      sub: address.sub,
+      details: addressDetails,
+      receiver: receiverDetails,
+      isDefault: false,
+      addressType: selectedAddressType,
+      location,
+    };
+
+    try {
+      const storedAddresses = await AsyncStorage.getItem('addresses');
+      const updatedAddresses = storedAddresses ? JSON.parse(storedAddresses) : [];
+      updatedAddresses.push(newAddress);
+
+      await AsyncStorage.setItem('addresses', JSON.stringify(updatedAddresses));
+      alert('Address saved successfully!');
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error saving address:', error);
+    }
+  };
+
+  const handleAddressTypeChange = (type) => {
+    setSelectedAddressType(type);
+  };
+
   if (!location) {
     return <Text style={styles.loadingText}>Fetching location...</Text>;
   }
@@ -125,7 +198,13 @@ const ConfirmLocation = ({ route, navigation }) => {
           onDragEnd={handleMarkerDragEnd}
         />
       </MapView>
-      <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints}>
+      <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} onChange={(index) => {
+        if (index === 0) {
+          setShowAddressForm(false);
+        } else if (index === 2) {
+          setShowAddressForm(true);
+        }
+      }}>
         <BottomSheetView style={styles.addressDetails}>
           <View style={styles.addressContainer}>
             <View style={styles.iconAndText}>
@@ -139,10 +218,59 @@ const ConfirmLocation = ({ route, navigation }) => {
               <Text style={styles.changeButtonText}>Change</Text>
             </TouchableOpacity>
           </View>
-          <CustomButton
-            title="Add more address details"
-            onPress={() => navigation.navigate('AddAddressScreen')}
-          />
+          {!showAddressForm ? (
+            <CustomButton
+              title="Add more address details"
+              onPress={handleAddDetails}
+            />
+          ) : (
+            <View style={styles.formContainer}>
+              <Text style={styles.saveAsText}>Enter complete address</Text>
+              {addressInputs.map((input, index) => (
+                <InputWithIcon
+                  key={index}
+                  placeholder={input.placeholder}
+                  IconComponent={input.IconComponent}
+                  value={input.value}
+                  onChangeText={input.onChangeText}
+                />
+              ))}
+              <View style={styles.saveAsContainer}>
+                <Text style={styles.saveAsText}>Save address as</Text>
+                <View style={styles.saveAsOptions}>
+              {["Home", "Office", "Others"].map((type) => (
+                <TouchableOpacity
+                  key={type}
+                  style={[
+                    styles.saveOption,
+                    selectedAddressType === type && styles.selectedOption,
+                  ]}
+                  onPress={() => handleAddressTypeChange(type)}
+                >
+                  <Text
+                    style={[
+                      styles.optionText,
+                      selectedAddressType === type && styles.selectedOptionText,
+                    ]}
+                  >
+                    {type}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+              </View>
+              {receiverInputs.map((input, index) => (
+                <InputWithIcon
+                  key={index}
+                  placeholder={input.placeholder}
+                  IconComponent={input.IconComponent}
+                  value={input.value}
+                  onChangeText={input.onChangeText}
+                />
+              ))}
+              <CustomButton title="Save address" onPress={() => handleSaveAddress()} />
+            </View>
+          )}
         </BottomSheetView>
       </BottomSheet>
     </View>
@@ -161,42 +289,84 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center',
     fontSize: 16,
+    color: '#888',
   },
   addressDetails: {
     padding: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
   },
   addressContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
   },
   iconAndText: {
     flexDirection: 'row',
-    flex: 1,
+    alignItems: 'center',
   },
   icon: {
-    marginRight: 12,
+    marginRight: 8,
+  },
+  selectedOptionText: {
+    color: '#fff',
+  },
+  selectedOption: {
+    backgroundColor: '#FF5722',
+    borderColor: '#FF5722',
+  },
+  optionText: {
+    color: '#333',
   },
   addressText: {
-    fontWeight: 'bold',
     fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
   },
   addressSubText: {
-    color: 'gray',
-    marginVertical: 4,
+    fontSize: 14,
+    color: '#666',
   },
   changeButton: {
-    alignSelf: 'flex-start',
-    padding: 8,
-    marginTop: 8,
-    backgroundColor: '#F5F6FB',
-    borderRadius: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    backgroundColor: '#FF5722',
+    borderRadius: 16,
   },
   changeButtonText: {
-    fontSize: 12,
-    color: '#EF6C00',
-    fontWeight: '600',
+    fontSize: 14,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  formContainer: {
+    marginTop: 16,
+  },
+  saveAsContainer: {
+    marginBottom: 12,
+  },
+  saveAsText: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 8,
+    fontWeight: 'bold',
+  },
+  saveAsOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  saveOption: {
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    textAlign: 'center',
+    flex: 1,
+    marginHorizontal: 4,
+    fontSize: 14,
+    color: '#333',
+    backgroundColor: '#fff',
   },
 });
 
