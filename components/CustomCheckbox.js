@@ -1,17 +1,21 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
 import CheckboxIcon from "../assets/icons/checkbox.svg";
 
 const CustomCheckbox = ({ value, onValueChange }) => {
     return (
-        <TouchableOpacity
-            onPress={() => onValueChange(!value)}
-            style={[
-                styles.checkboxContainer,
-            ]}
-        >
-            {value && <CheckboxIcon />}
-        </TouchableOpacity>
+        <View style={styles.defaultAddressContainer}>
+            <TouchableOpacity
+                onPress={() => onValueChange(!value)}
+                style={[
+                    styles.checkboxContainer,
+                ]}
+            >
+                {value && <CheckboxIcon />}
+            </TouchableOpacity>
+            <Text style={styles.defaultAddressText}>Set as default address</Text>
+        </View>
+
     );
 };
 
@@ -24,6 +28,15 @@ const styles = StyleSheet.create({
         borderColor: "#808080",
         alignItems: "center",
         justifyContent: "center",
+    },
+    defaultAddressContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginVertical: 12,
+    },
+    defaultAddressText: {
+        fontSize: 14,
+        marginLeft: 8,
     },
 });
 

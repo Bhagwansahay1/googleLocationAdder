@@ -86,7 +86,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFF6F7",
         padding: 12,
         borderRadius: 8,
-        marginBottom: 20,
     },
     locationIcon: {
         marginRight: 8,

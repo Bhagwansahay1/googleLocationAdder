@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
@@ -15,13 +15,17 @@ import UserIcon from '../assets/icons/userIcon.svg';
 import PhoneIcon from '../assets/icons/phoneIcon.svg';
 import PetNameIcon from '../assets/icons/petNameIcon.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ScrollView } from 'react-native-gesture-handler';
+import CustomCheckbox from '../components/CustomCheckbox';
+import { v4 as uuidv4 } from 'uuid';
 
 const ConfirmLocation = ({ route, navigation }) => {
   const { addressText, placeId, isAutocomplete, addressData, savedAddress } = route.params || {};
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
   const [address, setAddress] = useState({ main: '', sub: '' });
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [selectedAddressType, setSelectedAddressType] = useState("Home");
+  const [defaultAddressCheckBox, setDefaultAddressCheckBox] = useState(false);
   const [addressDetails, setAddressDetails] = useState({
     houseNumber: "",
     buildingName: "",
@@ -45,24 +49,28 @@ const ConfirmLocation = ({ route, navigation }) => {
   ];
 
   const bottomSheetRef = useRef(null);
-  const snapPoints = useMemo(() => ['25%', '80%'], []);
+  const snapPoints = useMemo(() => ['25%', '95%'], []);
 
   useEffect(() => {
     if (savedAddress) {
-      const { main, sub, details, receiver, location } = savedAddress;
+      const { main, sub, details, receiver, location, isDefault } = savedAddress;
       setAddress({ main, sub });
       setAddressDetails(details || {});
       setReceiverDetails(receiver || {});
       setLocation(location);
+      setDefaultAddressCheckBox(isDefault);
     }
     else if (isAutocomplete && placeId) {
       fetchPlaceDetails(placeId);
     } else if (addressData) {
-      fetchCoordinatesFromAddress(addressData);
+      setAddressDetails(addressData.addressDetails);
+      setReceiverDetails(addressData.receiverDetails);
+      setDefaultAddressCheckBox(addressData.isDefault);
+      fetchCoordinatesFromAddress(addressData.addressDetails);
     } else {
       fetchCurrentLocation();
     }
-  }, [isAutocomplete, placeId]);
+  }, [isAutocomplete, placeId, addressData, savedAddress]);
 
   const fetchCurrentLocation = () => {
     Geolocation.getCurrentPosition(
@@ -112,7 +120,7 @@ const ConfirmLocation = ({ route, navigation }) => {
   };
 
   const fetchCoordinatesFromAddress = async (addressData) => {
-    const fullAddress = `${addressData.houseNo}, ${addressData.buildingNo}, ${addressData.city}, ${addressData.state}, ${addressData.pincode}`;
+    const fullAddress = `${addressData.houseNumber}, ${addressData.buildingName}, ${addressData.addressLine1}, ${addressData.city}, ${addressData.state}, ${addressData.pincode}`;
 
     try {
       const response = await axios.get(
@@ -149,27 +157,43 @@ const ConfirmLocation = ({ route, navigation }) => {
 
   const handleSaveAddress = async () => {
     const newAddress = {
+      id: savedAddress?.id || uuidv4(),
       main: address.main,
       sub: address.sub,
       details: addressDetails,
       receiver: receiverDetails,
-      isDefault: false,
+      isDefault: defaultAddressCheckBox,
       addressType: selectedAddressType,
       location,
     };
-
+  
     try {
       const storedAddresses = await AsyncStorage.getItem('addresses');
-      const updatedAddresses = storedAddresses ? JSON.parse(storedAddresses) : [];
-      updatedAddresses.push(newAddress);
-
+      let updatedAddresses = storedAddresses ? JSON.parse(storedAddresses) : [];
+  
+      if (newAddress.isDefault) {
+        updatedAddresses = updatedAddresses.map((address) => ({
+          ...address,
+          isDefault: false,
+        }));
+      }
+  
+      const existingIndex = updatedAddresses.findIndex((address) => address.id === newAddress.id);
+      if (existingIndex !== -1) {
+        updatedAddresses[existingIndex] = newAddress;
+      } else {
+        updatedAddresses.push(newAddress);
+      }
+  
       await AsyncStorage.setItem('addresses', JSON.stringify(updatedAddresses));
+  
       alert('Address saved successfully!');
-      navigation.goBack();
+      navigation.navigate('AddressList');
     } catch (error) {
       console.error('Error saving address:', error);
     }
   };
+  
 
   const handleAddressTypeChange = (type) => {
     setSelectedAddressType(type);
@@ -180,100 +204,112 @@ const ConfirmLocation = ({ route, navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: location.latitude,
-          longitude: location.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}
-      >
-        <Marker
-          coordinate={location}
-          draggable
-          title="Order will be delivered here"
-          description="Move the pin to change location"
-          onDragEnd={handleMarkerDragEnd}
-        />
-      </MapView>
-      <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} onChange={(index) => {
-        if (index === 0) {
-          setShowAddressForm(false);
-        } else if (index === 2) {
-          setShowAddressForm(true);
-        }
-      }}>
-        <BottomSheetView style={styles.addressDetails}>
-          <View style={styles.addressContainer}>
-            <View style={styles.iconAndText}>
-              <LocationPin style={styles.icon} />
-              <View>
-                <Text style={styles.addressText}>{address.main}</Text>
-                <Text style={styles.addressSubText}>{address.sub}</Text>
-              </View>
-            </View>
-            <TouchableOpacity style={styles.changeButton} onPress={() => navigation.goBack()}>
-              <Text style={styles.changeButtonText}>Change</Text>
-            </TouchableOpacity>
-          </View>
-          {!showAddressForm ? (
-            <CustomButton
-              title="Add more address details"
-              onPress={handleAddDetails}
-            />
-          ) : (
-            <View style={styles.formContainer}>
-              <Text style={styles.saveAsText}>Enter complete address</Text>
-              {addressInputs.map((input, index) => (
-                <InputWithIcon
-                  key={index}
-                  placeholder={input.placeholder}
-                  IconComponent={input.IconComponent}
-                  value={input.value}
-                  onChangeText={input.onChangeText}
-                />
-              ))}
-              <View style={styles.saveAsContainer}>
-                <Text style={styles.saveAsText}>Save address as</Text>
-                <View style={styles.saveAsOptions}>
-              {["Home", "Office", "Others"].map((type) => (
-                <TouchableOpacity
-                  key={type}
-                  style={[
-                    styles.saveOption,
-                    selectedAddressType === type && styles.selectedOption,
-                  ]}
-                  onPress={() => handleAddressTypeChange(type)}
-                >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      selectedAddressType === type && styles.selectedOptionText,
-                    ]}
-                  >
-                    {type}
-                  </Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <View style={styles.container}>
+        <MapView
+          key={location ? `${location.latitude}-${location.longitude}` : 'initial-map'}
+          style={styles.map}
+          initialRegion={{
+            latitude: location.latitude,
+            longitude: location.longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          }}
+        >
+          <Marker
+            coordinate={location}
+            draggable
+            title="Order will be delivered here"
+            description="Move the pin to change location"
+            onDragEnd={handleMarkerDragEnd}
+          />
+        </MapView>
+        <BottomSheet
+          ref={bottomSheetRef}
+          snapPoints={snapPoints}
+          onChange={(index) => {
+            setShowAddressForm(index !== 0);
+          }}
+        >
+          <BottomSheetView style={styles.addressDetails}>
+            <ScrollView>
+              <View style={styles.addressContainer}>
+                <View style={styles.iconAndText}>
+                  <LocationPin style={styles.icon} />
+                  <View>
+                    <Text style={styles.addressText}>{address.main}</Text>
+                    <Text style={styles.addressSubText}>{address.sub}</Text>
+                  </View>
+                </View>
+                <TouchableOpacity style={styles.changeButton} onPress={() => navigation.goBack()}>
+                  <Text style={styles.changeButtonText}>Change</Text>
                 </TouchableOpacity>
-              ))}
-            </View>
               </View>
-              {receiverInputs.map((input, index) => (
-                <InputWithIcon
-                  key={index}
-                  placeholder={input.placeholder}
-                  IconComponent={input.IconComponent}
-                  value={input.value}
-                  onChangeText={input.onChangeText}
+              {!showAddressForm ? (
+                <CustomButton
+                  title="Add more address details"
+                  onPress={handleAddDetails}
                 />
-              ))}
-              <CustomButton title="Save address" onPress={() => handleSaveAddress()} />
-            </View>
-          )}
-        </BottomSheetView>
-      </BottomSheet>
-    </View>
+              ) : (
+                <View style={styles.formContainer}>
+                  <Text style={styles.saveAsText}>Enter complete address</Text>
+                  {addressInputs.map((input, index) => (
+                    <InputWithIcon
+                      key={index}
+                      placeholder={input.placeholder}
+                      IconComponent={input.IconComponent}
+                      value={input.value}
+                      onChangeText={input.onChangeText}
+                    />
+                  ))}
+                  <View style={styles.saveAsContainer}>
+                    <Text style={styles.saveAsText}>Save address as</Text>
+                    <View style={styles.saveAsOptions}>
+                      {['Home', 'Office', 'Others'].map((type) => (
+                        <TouchableOpacity
+                          key={type}
+                          style={[
+                            styles.saveOption,
+                            selectedAddressType === type && styles.selectedOption,
+                          ]}
+                          onPress={() => handleAddressTypeChange(type)}
+                        >
+                          <Text
+                            style={[
+                              styles.optionText,
+                              selectedAddressType === type && styles.selectedOptionText,
+                            ]}
+                          >
+                            {type}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                  {receiverInputs.map((input, index) => (
+                    <InputWithIcon
+                      key={index}
+                      placeholder={input.placeholder}
+                      IconComponent={input.IconComponent}
+                      value={input.value}
+                      onChangeText={input.onChangeText}
+                    />
+                  ))}
+                  <CustomCheckbox
+                    value={defaultAddressCheckBox}
+                    onValueChange={(newValue) => setDefaultAddressCheckBox(newValue)}
+                  />
+                  <CustomButton title="Save address" onPress={handleSaveAddress} />
+                </View>
+              )}
+            </ScrollView>
+          </BottomSheetView>
+        </BottomSheet>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 

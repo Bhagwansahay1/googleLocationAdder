@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
     View,
-    Text,
     StyleSheet,
     KeyboardAvoidingView,
     ScrollView,
@@ -13,56 +12,46 @@ import ReceiverDetails from "./ReceiverDetails";
 import LocationPermissionBanner from "./LocationPremissionBanner";
 import CustomButton from "./CustomButton";
 import CustomCheckbox from "./CustomCheckbox";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useLocation } from "../context/LocationContext";
 
 const AddressManually = () => {
-    const [toggleCheckBox, setToggleCheckBox] = useState(false);
+    const [defaultAddressCheckBox, setDefaultAddressCheckBox] = useState(false);
     const [addressDetails, setAddressDetails] = useState({
         pincode: "",
         city: "",
         state: "",
-        houseNo: "",
-        buildingNo: "",
+        houseNumber: "",
+        buildingName: "",
+        addressLine1: "",
     });
     const [receiverDetails, setReceiverDetails] = useState({
-        name: "",
-        mobile: "",
+        receiverName: "",
+        receiverMobile: "",
         petName: "",
     });
     const navigation = useNavigation();
     const { locationPermissionGranted } = useLocation();
 
     const handleInputChange = (field, value, type = "address") => {
-        console.log("field==>>", field)
         if (type === "address") {
             setAddressDetails((prev) => ({ ...prev, [field]: value }));
-
             if (field === "pincode" && value.length === 6) {
                 fetchCityAndState(value);
             }
         } else {
-            console.log("receiverDetails==>>", receiverDetails)
             setReceiverDetails((prev) => ({ ...prev, [field]: value }));
         }
     };
     const handleSubmit = async () => {
         const fullData = {
-            ...addressDetails,
-            ...receiverDetails,
-            isDefault: toggleCheckBox,
+            addressDetails,
+            receiverDetails,
+            isDefault: defaultAddressCheckBox,
         };
-
-        try {
-            navigation.navigate("Confirm Location", {
-                addressData: addressDetails,
-            });
-            await AsyncStorage.setItem("defaultAddress", JSON.stringify(fullData));
-            Alert.alert("Success", "Address saved successfully!");
-        } catch (error) {
-            console.error("Error saving address to local storage:", error);
-        }
+        navigation.navigate("Confirm Location", {
+            addressData: fullData,
+        });
     };
 
     const fetchCityAndState = async (pincode) => {
@@ -93,16 +82,15 @@ const AddressManually = () => {
                 <View style={styles.addressContainer}>
                     <AddressDetails addressInputs={addressDetails} handleInputChange={handleInputChange} />
                     <ReceiverDetails receiverInputs={receiverDetails} handleInputChange={handleInputChange} />
-                    <View style={styles.defaultAddressContainer}>
-                        <CustomCheckbox
-                            value={toggleCheckBox}
-                            onValueChange={(newValue) => setToggleCheckBox(newValue)}
-                        />
-                        <Text style={styles.defaultAddressText}>Set as default address</Text>
-                    </View>
-                    <CustomButton title="Confirm location" onPress={handleSubmit} />
                 </View>
             </ScrollView>
+            <View style={styles.bottomContainer}>
+                <CustomCheckbox
+                    value={defaultAddressCheckBox}
+                    onValueChange={(newValue) => setDefaultAddressCheckBox(newValue)}
+                />
+                <CustomButton title="Confirm location" onPress={handleSubmit} />
+            </View>
         </KeyboardAvoidingView>
     );
 };
@@ -128,18 +116,12 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginLeft: 8,
     },
+    bottomContainer: {
+        backgroundColor: "#FFFFFF",
+        padding: 16,
+    },
     checkbox: {
         alignSelf: 'center',
-    },
-    defaultAddressContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginTop: 20,
-    },
-    defaultAddressText: {
-        fontSize: 14,
-        marginLeft: 8,
-        color: "#808080",
     },
 });
 

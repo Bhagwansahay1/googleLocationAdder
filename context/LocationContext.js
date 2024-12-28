@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { PermissionsAndroid, Platform } from "react-native";
+import { PermissionsAndroid, Platform, AppState } from "react-native";
 import Geolocation from "@react-native-community/geolocation";
 
 const LocationContext = createContext();
@@ -7,41 +7,42 @@ const LocationContext = createContext();
 export const LocationProvider = ({ children }) => {
     const [locationPermissionGranted, setLocationPermissionGranted] = useState(false);
     const [userLocation, setUserLocation] = useState(null);
+    const [appState, setAppState] = useState(AppState.currentState);
 
     const checkAndRequestPermission = async () => {
         try {
             if (Platform.OS === "android") {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                    {
-                        title: "Location Permission",
-                        message: "This app requires access to your location to work properly.",
-                        buttonNeutral: "Ask Me Later",
-                        buttonNegative: "Cancel",
-                        buttonPositive: "OK",
-                    }
-                );
-
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                const granted = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+                if (granted) {
                     setLocationPermissionGranted(true);
                     return true;
                 } else {
-                    setLocationPermissionGranted(false);
-                    return false;
+                    const request = await PermissionsAndroid.request(
+                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                        {
+                            title: "Location Permission",
+                            message: "This app requires access to your location to work properly.",
+                            buttonNeutral: "Ask Me Later",
+                            buttonNegative: "Cancel",
+                            buttonPositive: "OK",
+                        }
+                    );
+                    if (request === PermissionsAndroid.RESULTS.GRANTED) {
+                        setLocationPermissionGranted(true);
+                        return true;
+                    }
                 }
             } else if (Platform.OS === "ios") {
-                Geolocation.requestAuthorization("whenInUse").then((status) => {
-                    if (status === "granted") {
-                        setLocationPermissionGranted(true);
-                    } else {
-                        setLocationPermissionGranted(false);
-                    }
-                });
+                const status = await Geolocation.requestAuthorization("whenInUse");
+                if (status === "granted") {
+                    setLocationPermissionGranted(true);
+                    return true;
+                }
             }
         } catch (err) {
             console.warn(err);
-            setLocationPermissionGranted(false);
         }
+        setLocationPermissionGranted(false);
         return false;
     };
 
@@ -60,6 +61,21 @@ export const LocationProvider = ({ children }) => {
             );
         }
     };
+
+    const handleAppStateChange = async (nextAppState) => {
+        if (appState.match(/inactive|background/) && nextAppState === "active") {
+            const permissionGranted = await checkAndRequestPermission();
+            if (permissionGranted) {
+                fetchUserLocation();
+            }
+        }
+        setAppState(nextAppState);
+    };
+
+    useEffect(() => {
+        const subscription = AppState.addEventListener("change", handleAppStateChange);
+        return () => subscription.remove();
+    }, [appState]);
 
     useEffect(() => {
         (async () => {

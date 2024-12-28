@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AddressListScreen from './screens/AddressListScreen';
+import { ActivityIndicator, View } from 'react-native';
 
 enableScreens();
 const Stack = createStackNavigator();
@@ -35,6 +36,14 @@ function App(): React.JSX.Element {
 
     checkAddresses();
   }, []);
+
+  if (initialRoute === null) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#FF5722" />
+      </View>
+    );
+  }
 
   return (
     <LocationProvider>

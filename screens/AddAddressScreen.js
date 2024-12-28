@@ -148,8 +148,7 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         paddingHorizontal: 16,
         paddingVertical: 8,
-        marginBottom: 20,
-        marginHorizontal: 16,
+        margin: 16,
     },
     searchInput: {
         flex: 1,

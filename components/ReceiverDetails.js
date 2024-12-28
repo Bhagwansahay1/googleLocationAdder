@@ -2,10 +2,10 @@ import React from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
 
 const ReceiverDetails = ({ receiverInputs, handleInputChange }) => {
-  const { name, mobile, petName } = receiverInputs;
+  const { receiverName, receiverMobile, petName } = receiverInputs;
   const validateMobile = (value) => {
     const numericValue = value.replace(/[^0-9]/g, "");
-    handleInputChange("mobile", numericValue, "receiver");
+    handleInputChange("receiverMobile", numericValue, "receiver");
   };
   return (
     <>
@@ -13,8 +13,8 @@ const ReceiverDetails = ({ receiverInputs, handleInputChange }) => {
         <Text style={styles.title}>Receiver's details</Text>
       </View>
       <View style={styles.container}>
-        <TextInput style={styles.input} placeholder="Your name" value={name} onChangeText={(value) => handleInputChange("name", value, "receiver")} />
-        <TextInput style={styles.input} keyboardType="numeric" maxLength={10} placeholder="Your mobile no." value={mobile} onChangeText={(value) => validateMobile(value)} />
+        <TextInput style={styles.input} placeholder="Your name" value={receiverName} onChangeText={(value) => handleInputChange("receiverName", value, "receiver")} />
+        <TextInput style={styles.input} keyboardType="numeric" maxLength={10} placeholder="Your mobile no." value={receiverMobile} onChangeText={(value) => validateMobile(value)} />
         <TextInput style={styles.input} placeholder="Your pet's name" value={petName} onChangeText={(value) => handleInputChange("petName", value, "receiver")} />
       </View>
     </>

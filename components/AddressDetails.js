@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
 
 const AddressDetails = ({ addressInputs, handleInputChange }) => {
-  const { pincode, city, state, houseNo, buildingNo } = addressInputs;
+  const { pincode, city, state, houseNumber, buildingName, addressLine1 } = addressInputs;
   return (
     <>
       <View>
@@ -14,8 +14,9 @@ const AddressDetails = ({ addressInputs, handleInputChange }) => {
           <TextInput style={[styles.input, styles.halfInput]} editable={false} value={city} placeholder="City" onChangeText={(value) => handleInputChange("city", value)} />
           <TextInput style={[styles.input, styles.halfInput]} editable={false} placeholder="State" value={state} onChangeText={(value) => handleInputChange("state", value)} />
         </View>
-        <TextInput style={styles.input} placeholder="House/Flat no." value={houseNo} onChangeText={(value) => handleInputChange("houseNo", value)} />
-        <TextInput style={styles.input} placeholder="Building no." value={buildingNo} onChangeText={(value) => handleInputChange("buildingNo", value)} />
+        <TextInput style={styles.input} placeholder="House/Flat no." value={houseNumber} onChangeText={(value) => handleInputChange("houseNumber", value)} />
+        <TextInput style={styles.input} placeholder="Building name." value={buildingName} onChangeText={(value) => handleInputChange("buildingName", value)} />
+        <TextInput style={styles.input} placeholder="Address line 1" value={addressLine1} onChangeText={(value) => handleInputChange("addressLine1", value)} multiline={true} />
       </View>
     </>
   );
