@@ -11,12 +11,12 @@ import {
 } from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import LocationPin from "../assets/icons/pin.svg";
-import SearchIcon from "../assets/icons/Search.svg";
-import LocationPermissionBanner from "../components/LocationPremissionBanner";
 import { GOOGLE_MAP_API_KEY, IP_GEO_API_KEY } from "@env";
+import LocationPermissionBanner from "../components/LocationPremissionBanner";
 import AddressManually from "../components/AddressManually";
 import { useLocation } from "../context/LocationContext";
+import LocationPin from "../assets/icons/pin.svg";
+import SearchIcon from "../assets/icons/Search.svg";
 
 const AddAddressScreen = () => {
     const [searchText, setSearchText] = useState("");

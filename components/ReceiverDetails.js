@@ -13,9 +13,12 @@ const ReceiverDetails = ({ receiverInputs, handleInputChange }) => {
         <Text style={styles.title}>Receiver's details</Text>
       </View>
       <View style={styles.container}>
-        <TextInput style={styles.input} placeholder="Your name" value={receiverName} onChangeText={(value) => handleInputChange("receiverName", value, "receiver")} />
-        <TextInput style={styles.input} keyboardType="numeric" maxLength={10} placeholder="Your mobile no." value={receiverMobile} onChangeText={(value) => validateMobile(value)} />
-        <TextInput style={styles.input} placeholder="Your pet's name" value={petName} onChangeText={(value) => handleInputChange("petName", value, "receiver")} />
+        <TextInput style={styles.input} placeholder="Your name" value={receiverName}
+          onChangeText={(value) => handleInputChange("receiverName", value, "receiver")} />
+        <TextInput style={styles.input} keyboardType="numeric" maxLength={10} placeholder="Your mobile no." value={receiverMobile}
+          onChangeText={(value) => validateMobile(value)} />
+        <TextInput style={styles.input} placeholder="Your pet's name" value={petName}
+          onChangeText={(value) => handleInputChange("petName", value, "receiver")} />
       </View>
     </>
   );

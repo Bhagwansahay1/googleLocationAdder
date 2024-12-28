@@ -6,6 +6,7 @@ const StartScreen = ({ navigation }) => {
     const requestLocationPermission = async () => {
         console.log(Platform.OS, 'Requesting location permission...');
         if (Platform.OS === 'android') {
+            console.log('Checking location permission...');
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
             );

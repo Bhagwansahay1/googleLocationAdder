@@ -7,12 +7,12 @@ import {
     Platform,
     Alert,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import AddressDetails from "./AddressDetails";
 import ReceiverDetails from "./ReceiverDetails";
 import LocationPermissionBanner from "./LocationPremissionBanner";
 import CustomButton from "./CustomButton";
 import CustomCheckbox from "./CustomCheckbox";
-import { useNavigation } from "@react-navigation/native";
 import { useLocation } from "../context/LocationContext";
 
 const AddressManually = () => {

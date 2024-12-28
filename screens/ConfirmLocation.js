@@ -1,29 +1,27 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
-import axios from 'axios';
-import { GOOGLE_MAP_API_KEY } from '@env';
-import CustomButton from '../components/CustomButton';
-import LocationPin from '../assets/icons/mapPin.svg';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import HomeIcon from '../assets/icons/homeIcon.svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ScrollView } from 'react-native-gesture-handler';
+import uuid from 'react-native-uuid';
+import CustomCheckbox from '../components/CustomCheckbox';
 import InputWithIcon from '../components/InputWithIcon';
+import CustomButton from '../components/CustomButton';
+import { fetchAddress, fetchCoordinatesFromAddress, fetchCurrentLocation, fetchPlaceDetails } from '../utils/utils';
+import HouseFillIcon from '../assets/icons/houseFill.svg';
+import OfficeIcon from '../assets/icons/work.svg';
+import MapPinBlackIcon from '../assets/icons/mapPinBlack.svg';
 import BuildingIcon from '../assets/icons/buildingIcon.svg';
 import LandmarkIcon from '../assets/icons/landmarkIcon.svg';
 import UserIcon from '../assets/icons/userIcon.svg';
 import PhoneIcon from '../assets/icons/phoneIcon.svg';
 import PetNameIcon from '../assets/icons/petNameIcon.svg';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ScrollView } from 'react-native-gesture-handler';
-import CustomCheckbox from '../components/CustomCheckbox';
-import HouseFillIcon from '../assets/icons/houseFill.svg';
-import OfficeIcon from '../assets/icons/work.svg';
-import MapPinBlackIcon from '../assets/icons/mapPinBlack.svg';
-import uuid from 'react-native-uuid';
+import HomeIcon from '../assets/icons/homeIcon.svg';
+import LocationPin from '../assets/icons/mapPin.svg';
 
 const ConfirmLocation = ({ route, navigation }) => {
-  const { addressText, placeId, isAutocomplete, addressData, savedAddress } = route.params || {};
+  const { placeId, isAutocomplete, addressData, savedAddress } = route.params || {};
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState({ main: '', sub: '' });
   const [showAddressForm, setShowAddressForm] = useState(false);
@@ -40,15 +38,33 @@ const ConfirmLocation = ({ route, navigation }) => {
     petName: "",
   });
   const addressInputs = [
-    { placeholder: 'House/Flat no.', value: addressDetails.houseNumber, IconComponent: HomeIcon, onChangeText: (value) => setAddressDetails({ ...addressDetails, houseNumber: value }) },
-    { placeholder: 'Building name', value: addressDetails.buildingName, IconComponent: BuildingIcon, onChangeText: (value) => setAddressDetails({ ...addressDetails, buildingName: value }) },
-    { placeholder: 'Landmark', value: addressDetails.landmark, IconComponent: LandmarkIcon, onChangeText: (value) => setAddressDetails({ ...addressDetails, landmark: value }) },
+    {
+      placeholder: 'House/Flat no.', value: addressDetails.houseNumber, IconComponent: HomeIcon,
+      onChangeText: (value) => setAddressDetails({ ...addressDetails, houseNumber: value })
+    },
+    {
+      placeholder: 'Building name', value: addressDetails.buildingName, IconComponent: BuildingIcon,
+      onChangeText: (value) => setAddressDetails({ ...addressDetails, buildingName: value })
+    },
+    {
+      placeholder: 'Landmark', value: addressDetails.landmark, IconComponent: LandmarkIcon,
+      onChangeText: (value) => setAddressDetails({ ...addressDetails, landmark: value })
+    },
   ];
 
   const receiverInputs = [
-    { placeholder: 'Your name', value: receiverDetails.receiverName, IconComponent: UserIcon, onChangeText: (value) => setReceiverDetails({ ...receiverDetails, receiverName: value }) },
-    { placeholder: 'Your mobile no.', value: receiverDetails.receiverMobile, IconComponent: PhoneIcon, onChangeText: (value) => setReceiverDetails({ ...receiverDetails, receiverMobile: value }) },
-    { placeholder: 'Your pet name', value: receiverDetails.petName, IconComponent: PetNameIcon, onChangeText: (value) => setReceiverDetails({ ...receiverDetails, petName: value }) },
+    {
+      placeholder: 'Your name', value: receiverDetails.receiverName, IconComponent: UserIcon,
+      onChangeText: (value) => setReceiverDetails({ ...receiverDetails, receiverName: value })
+    },
+    {
+      placeholder: 'Your mobile no.', value: receiverDetails.receiverMobile, IconComponent: PhoneIcon,
+      onChangeText: (value) => setReceiverDetails({ ...receiverDetails, receiverMobile: value })
+    },
+    {
+      placeholder: 'Your pet name', value: receiverDetails.petName, IconComponent: PetNameIcon,
+      onChangeText: (value) => setReceiverDetails({ ...receiverDetails, petName: value })
+    },
   ];
 
   const addressTypes = [
@@ -61,7 +77,6 @@ const ConfirmLocation = ({ route, navigation }) => {
   const snapPoints = useMemo(() => ['30%', '95%'], []);
 
   useEffect(() => {
-    console.log("userEffect call",savedAddress);
     if (savedAddress) {
       const { main, sub, details, receiver, location, isDefault, addressType } = savedAddress;
       setAddress({ main, sub });
@@ -72,88 +87,28 @@ const ConfirmLocation = ({ route, navigation }) => {
       setSelectedAddressType(addressType);
     }
     else if (isAutocomplete && placeId) {
-      fetchPlaceDetails(placeId);
+      fetchPlaceDetails(placeId).then(({ location, address }) => {
+        setLocation(location);
+        setAddress(address);
+      });
     } else if (addressData) {
       setAddressDetails(addressData.addressDetails);
       setReceiverDetails(addressData.receiverDetails);
       setDefaultAddressCheckBox(addressData.isDefault);
-      fetchCoordinatesFromAddress(addressData.addressDetails);
+      fetchCoordinatesFromAddress(addressData.addressDetails).then((locationData) => {
+        setLocation({ latitude: locationData.latitude, longitude: locationData.longitude });
+        setAddress({
+          main: locationData.main,
+          sub: locationData.sub
+        });
+      });
     } else {
-      fetchCurrentLocation();
+      fetchCurrentLocation().then(location => {
+        setLocation(location);
+        fetchAddress(location.latitude, location.longitude).then(address => setAddress(address));
+      });
     }
   }, [isAutocomplete, placeId, addressData, savedAddress]);
-
-  const fetchCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        const { latitude, longitude } = position.coords;
-        setLocation({ latitude, longitude });
-        fetchAddress(latitude, longitude);
-      },
-      error => console.error('Error fetching location:', error),
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
-  };
-
-  const fetchPlaceDetails = async (placeId) => {
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_MAP_API_KEY}`
-      );
-      const { lat, lng } = response.data.result.geometry.location;
-      const formattedAddress = response.data.result.formatted_address || 'Unknown Address';
-
-      setLocation({ latitude: lat, longitude: lng });
-      setAddress({ main: formattedAddress, sub: formattedAddress });
-    } catch (error) {
-      console.error('Error fetching place details:', error);
-    }
-  };
-
-  const fetchAddress = async (latitude, longitude) => {
-    try {
-      console.log(latitude, longitude, fetchAddress);
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAP_API_KEY}`
-      );
-      console.log(response.data.results[0]?.address_components);
-      const addressComponents = response.data.results[0]?.address_components || [];
-      const formattedAddress = response.data.results[0]?.formatted_address || 'Unknown Location';
-
-      setAddress({
-        main: addressComponents[0]?.long_name || 'Current Location',
-        sub: formattedAddress,
-      });
-    } catch (error) {
-      console.error('Error fetching address:', error);
-      setAddress({ main: 'Unknown Location', sub: 'Unable to fetch address' });
-    }
-  };
-
-  const fetchCoordinatesFromAddress = async (addressData) => {
-    const fullAddress = `${addressData.houseNumber}, ${addressData.buildingName}, ${addressData.addressLine1}, ${addressData.city}, ${addressData.state}, ${addressData.pincode}`;
-
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=${GOOGLE_MAP_API_KEY}`
-      );
-
-      if (response.data.status === 'OK') {
-        const { lat, lng } = response.data.results[0].geometry.location;
-        setLocation({ latitude: lat, longitude: lng });
-        setAddress({
-          main: response.data.results[0]?.formatted_address || 'Unknown Address',
-          sub: `Pincode: ${addressData.pincode}`,
-        });
-      } else {
-        console.error('Geocoding failed:', response.data.status);
-        setAddress({ main: 'Unable to fetch location', sub: '' });
-      }
-    } catch (error) {
-      console.error('Error fetching coordinates:', error);
-      setAddress({ main: 'Error occurred', sub: '' });
-    }
-  };
 
   const handleMarkerDragEnd = (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
@@ -168,16 +123,16 @@ const ConfirmLocation = ({ route, navigation }) => {
 
   const handleSaveAddress = async () => {
     try {
-    const newAddress = {
-      id: savedAddress?.id || uuid.v4(),
-      main: address.main,
-      sub: address.sub,
-      details: addressDetails,
-      receiver: receiverDetails,
-      isDefault: defaultAddressCheckBox,
-      addressType: selectedAddressType,
-      location,
-    };
+      const newAddress = {
+        id: savedAddress?.id || uuid.v4(),
+        main: address.main,
+        sub: address.sub,
+        details: addressDetails,
+        receiver: receiverDetails,
+        isDefault: defaultAddressCheckBox,
+        addressType: selectedAddressType,
+        location,
+      };
       const storedAddresses = await AsyncStorage.getItem('addresses');
       let updatedAddresses = storedAddresses ? JSON.parse(storedAddresses) : [];
 
@@ -203,7 +158,6 @@ const ConfirmLocation = ({ route, navigation }) => {
       console.error('Error saving address:', error);
     }
   };
-
 
   const handleAddressTypeChange = (type) => {
     setSelectedAddressType(type);

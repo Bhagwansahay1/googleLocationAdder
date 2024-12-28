@@ -9,14 +9,20 @@ const AddressDetails = ({ addressInputs, handleInputChange }) => {
         <Text style={styles.title}>Address</Text>
       </View>
       <View style={styles.container}>
-        <TextInput style={styles.input} keyboardType="numeric" placeholder="Pincode" value={pincode} onChangeText={(value) => handleInputChange("pincode", value)} />
+        <TextInput style={styles.input} keyboardType="numeric" placeholder="Pincode" value={pincode}
+          onChangeText={(value) => handleInputChange("pincode", value)} />
         <View style={styles.row}>
-          <TextInput style={[styles.input, styles.halfInput]} editable={false} value={city} placeholder="City" onChangeText={(value) => handleInputChange("city", value)} />
-          <TextInput style={[styles.input, styles.halfInput]} editable={false} placeholder="State" value={state} onChangeText={(value) => handleInputChange("state", value)} />
+          <TextInput style={[styles.input, styles.halfInput]} editable={false} value={city} placeholder="City"
+            onChangeText={(value) => handleInputChange("city", value)} />
+          <TextInput style={[styles.input, styles.halfInput]} editable={false} placeholder="State" value={state}
+            onChangeText={(value) => handleInputChange("state", value)} />
         </View>
-        <TextInput style={styles.input} placeholder="House/Flat no." value={houseNumber} onChangeText={(value) => handleInputChange("houseNumber", value)} />
-        <TextInput style={styles.input} placeholder="Building name." value={buildingName} onChangeText={(value) => handleInputChange("buildingName", value)} />
-        <TextInput style={styles.input} placeholder="Address line 1" value={addressLine1} onChangeText={(value) => handleInputChange("addressLine1", value)} multiline={true} />
+        <TextInput style={styles.input} placeholder="House/Flat no." value={houseNumber}
+          onChangeText={(value) => handleInputChange("houseNumber", value)} />
+        <TextInput style={styles.input} placeholder="Building name." value={buildingName}
+          onChangeText={(value) => handleInputChange("buildingName", value)} />
+        <TextInput style={styles.input} placeholder="Address line 1" value={addressLine1}
+          onChangeText={(value) => handleInputChange("addressLine1", value)} multiline={true} />
       </View>
     </>
   );
