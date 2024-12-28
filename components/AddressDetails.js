@@ -31,9 +31,11 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   title: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 14,
+    fontWeight: 325,
     marginBottom: 12,
+    fontFamily: "GothamRounded-Medium",
+    color: "#000000",
   },
   input: {
     borderWidth: 1,
@@ -47,14 +49,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 60,
     elevation: 5,
+    fontFamily: "Lato-Regular",
+    fontSize: 12,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
+    gap: 10,
   },
   halfInput: {
     flex: 1,
-    marginRight: 10,
   },
 });
 

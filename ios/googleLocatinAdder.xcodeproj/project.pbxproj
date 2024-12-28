@@ -14,6 +14,28 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-googleLocatinAdder-googleLocatinAdderTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-googleLocatinAdder-googleLocatinAdderTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		F17716B7E0D140CFAC118653 /* GothamRounded-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 54A10D06FBC74C5DA0246679 /* GothamRounded-Bold.otf */; };
+		FD2B0EC9F63546CE9D5AABCD /* GothamRounded-BoldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 80ECE2C9914241D698C538C3 /* GothamRounded-BoldItalic.otf */; };
+		FFBB1490B7B84C63825A2205 /* GothamRounded-Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = 532A950789EA44AD9C78BE21 /* GothamRounded-Book.otf */; };
+		302DAB668D11492FB1DFA809 /* GothamRounded-BookItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0B12E59AE6E2441282D10BEC /* GothamRounded-BookItalic.otf */; };
+		61382B05FE4D4BD3940A0D10 /* GothamRounded-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0DB58CC621004F0E9D2BED91 /* GothamRounded-Light.otf */; };
+		AE648F0AA7B14F419576EF80 /* GothamRounded-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = C9A0A873710E4BD58B1102F9 /* GothamRounded-LightItalic.otf */; };
+		CD3293B3C182435C869AAD85 /* GothamRounded-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3084DEFC848C477C8864EA2E /* GothamRounded-Medium.otf */; };
+		2E87F37590DE4DE190E1A1AD /* GothamRounded-MediumItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1E1269AA75CE46AFA693531E /* GothamRounded-MediumItalic.otf */; };
+		412A0045A8324A65A2A31CDB /* GothamRoundedBold_21016.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 43B4F48ABDE246BD918425FE /* GothamRoundedBold_21016.ttf */; };
+		804B2E89D3F248F7A09DF2B7 /* GothamRoundedBook_21018.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE8B1E1C05354D4EA4858958 /* GothamRoundedBook_21018.ttf */; };
+		639575CD00E54809945EB677 /* GothamRoundedLight_21020.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B5D36D814B1E4F8BBE2B9214 /* GothamRoundedLight_21020.ttf */; };
+		E471C066C09B46C2B6F08F8E /* GothamRoundedMedium_21022.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C668D74D54CD467E9810053F /* GothamRoundedMedium_21022.ttf */; };
+		C74AFB2156094F4E942E4B70 /* Lato-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BBE9BD1D46F4459EA494B638 /* Lato-Black.ttf */; };
+		C7AA83463F02463CB0EDD6F0 /* Lato-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 801796C814FF4AFB9BE5B168 /* Lato-BlackItalic.ttf */; };
+		5AEA9B9356044C5AACCB8744 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3170A3770712437189800D55 /* Lato-Bold.ttf */; };
+		8DD5BDA0F59E4FD8946A38A9 /* Lato-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69C17A50B7C4455398E46C13 /* Lato-BoldItalic.ttf */; };
+		59D51294A8524525AD45235C /* Lato-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0BD759DD9634658936A3E8A /* Lato-Italic.ttf */; };
+		8F9ED2A8A51B437986F6649A /* Lato-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 401F861341C84163B8499BF6 /* Lato-Light.ttf */; };
+		95D15C2E80C44A8ABF89A44A /* Lato-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C1501D8A5D924FDCAA7B162D /* Lato-LightItalic.ttf */; };
+		982377ACD1F2425294CC5489 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAAB0863E3784570ADCD804D /* Lato-Regular.ttf */; };
+		E07E5811F3844CCEB104D259 /* Lato-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9EA27746FFBB4C3F99F4E354 /* Lato-Thin.ttf */; };
+		AD3D46E2BFCE4266874F024D /* Lato-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 78AD969DA62D4A6881566429 /* Lato-ThinItalic.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +67,28 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = googleLocatinAdder/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-googleLocatinAdder-googleLocatinAdderTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-googleLocatinAdder-googleLocatinAdderTests.release.xcconfig"; path = "Target Support Files/Pods-googleLocatinAdder-googleLocatinAdderTests/Pods-googleLocatinAdder-googleLocatinAdderTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		54A10D06FBC74C5DA0246679 /* GothamRounded-Bold.otf */ = {isa = PBXFileReference; name = "GothamRounded-Bold.otf"; path = "../assets/fonts/GothamRounded-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		80ECE2C9914241D698C538C3 /* GothamRounded-BoldItalic.otf */ = {isa = PBXFileReference; name = "GothamRounded-BoldItalic.otf"; path = "../assets/fonts/GothamRounded-BoldItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		532A950789EA44AD9C78BE21 /* GothamRounded-Book.otf */ = {isa = PBXFileReference; name = "GothamRounded-Book.otf"; path = "../assets/fonts/GothamRounded-Book.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0B12E59AE6E2441282D10BEC /* GothamRounded-BookItalic.otf */ = {isa = PBXFileReference; name = "GothamRounded-BookItalic.otf"; path = "../assets/fonts/GothamRounded-BookItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0DB58CC621004F0E9D2BED91 /* GothamRounded-Light.otf */ = {isa = PBXFileReference; name = "GothamRounded-Light.otf"; path = "../assets/fonts/GothamRounded-Light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C9A0A873710E4BD58B1102F9 /* GothamRounded-LightItalic.otf */ = {isa = PBXFileReference; name = "GothamRounded-LightItalic.otf"; path = "../assets/fonts/GothamRounded-LightItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3084DEFC848C477C8864EA2E /* GothamRounded-Medium.otf */ = {isa = PBXFileReference; name = "GothamRounded-Medium.otf"; path = "../assets/fonts/GothamRounded-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1E1269AA75CE46AFA693531E /* GothamRounded-MediumItalic.otf */ = {isa = PBXFileReference; name = "GothamRounded-MediumItalic.otf"; path = "../assets/fonts/GothamRounded-MediumItalic.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		43B4F48ABDE246BD918425FE /* GothamRoundedBold_21016.ttf */ = {isa = PBXFileReference; name = "GothamRoundedBold_21016.ttf"; path = "../assets/fonts/GothamRoundedBold_21016.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CE8B1E1C05354D4EA4858958 /* GothamRoundedBook_21018.ttf */ = {isa = PBXFileReference; name = "GothamRoundedBook_21018.ttf"; path = "../assets/fonts/GothamRoundedBook_21018.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B5D36D814B1E4F8BBE2B9214 /* GothamRoundedLight_21020.ttf */ = {isa = PBXFileReference; name = "GothamRoundedLight_21020.ttf"; path = "../assets/fonts/GothamRoundedLight_21020.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C668D74D54CD467E9810053F /* GothamRoundedMedium_21022.ttf */ = {isa = PBXFileReference; name = "GothamRoundedMedium_21022.ttf"; path = "../assets/fonts/GothamRoundedMedium_21022.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		BBE9BD1D46F4459EA494B638 /* Lato-Black.ttf */ = {isa = PBXFileReference; name = "Lato-Black.ttf"; path = "../assets/fonts/Lato-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		801796C814FF4AFB9BE5B168 /* Lato-BlackItalic.ttf */ = {isa = PBXFileReference; name = "Lato-BlackItalic.ttf"; path = "../assets/fonts/Lato-BlackItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3170A3770712437189800D55 /* Lato-Bold.ttf */ = {isa = PBXFileReference; name = "Lato-Bold.ttf"; path = "../assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		69C17A50B7C4455398E46C13 /* Lato-BoldItalic.ttf */ = {isa = PBXFileReference; name = "Lato-BoldItalic.ttf"; path = "../assets/fonts/Lato-BoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E0BD759DD9634658936A3E8A /* Lato-Italic.ttf */ = {isa = PBXFileReference; name = "Lato-Italic.ttf"; path = "../assets/fonts/Lato-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		401F861341C84163B8499BF6 /* Lato-Light.ttf */ = {isa = PBXFileReference; name = "Lato-Light.ttf"; path = "../assets/fonts/Lato-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C1501D8A5D924FDCAA7B162D /* Lato-LightItalic.ttf */ = {isa = PBXFileReference; name = "Lato-LightItalic.ttf"; path = "../assets/fonts/Lato-LightItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FAAB0863E3784570ADCD804D /* Lato-Regular.ttf */ = {isa = PBXFileReference; name = "Lato-Regular.ttf"; path = "../assets/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		9EA27746FFBB4C3F99F4E354 /* Lato-Thin.ttf */ = {isa = PBXFileReference; name = "Lato-Thin.ttf"; path = "../assets/fonts/Lato-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		78AD969DA62D4A6881566429 /* Lato-ThinItalic.ttf */ = {isa = PBXFileReference; name = "Lato-ThinItalic.ttf"; path = "../assets/fonts/Lato-ThinItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +168,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				E6D2A70EED264E57A70399C3 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -149,6 +194,36 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		E6D2A70EED264E57A70399C3 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				54A10D06FBC74C5DA0246679 /* GothamRounded-Bold.otf */,
+				80ECE2C9914241D698C538C3 /* GothamRounded-BoldItalic.otf */,
+				532A950789EA44AD9C78BE21 /* GothamRounded-Book.otf */,
+				0B12E59AE6E2441282D10BEC /* GothamRounded-BookItalic.otf */,
+				0DB58CC621004F0E9D2BED91 /* GothamRounded-Light.otf */,
+				C9A0A873710E4BD58B1102F9 /* GothamRounded-LightItalic.otf */,
+				3084DEFC848C477C8864EA2E /* GothamRounded-Medium.otf */,
+				1E1269AA75CE46AFA693531E /* GothamRounded-MediumItalic.otf */,
+				43B4F48ABDE246BD918425FE /* GothamRoundedBold_21016.ttf */,
+				CE8B1E1C05354D4EA4858958 /* GothamRoundedBook_21018.ttf */,
+				B5D36D814B1E4F8BBE2B9214 /* GothamRoundedLight_21020.ttf */,
+				C668D74D54CD467E9810053F /* GothamRoundedMedium_21022.ttf */,
+				BBE9BD1D46F4459EA494B638 /* Lato-Black.ttf */,
+				801796C814FF4AFB9BE5B168 /* Lato-BlackItalic.ttf */,
+				3170A3770712437189800D55 /* Lato-Bold.ttf */,
+				69C17A50B7C4455398E46C13 /* Lato-BoldItalic.ttf */,
+				E0BD759DD9634658936A3E8A /* Lato-Italic.ttf */,
+				401F861341C84163B8499BF6 /* Lato-Light.ttf */,
+				C1501D8A5D924FDCAA7B162D /* Lato-LightItalic.ttf */,
+				FAAB0863E3784570ADCD804D /* Lato-Regular.ttf */,
+				9EA27746FFBB4C3F99F4E354 /* Lato-Thin.ttf */,
+				78AD969DA62D4A6881566429 /* Lato-ThinItalic.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -245,6 +320,28 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				F17716B7E0D140CFAC118653 /* GothamRounded-Bold.otf in Resources */,
+				FD2B0EC9F63546CE9D5AABCD /* GothamRounded-BoldItalic.otf in Resources */,
+				FFBB1490B7B84C63825A2205 /* GothamRounded-Book.otf in Resources */,
+				302DAB668D11492FB1DFA809 /* GothamRounded-BookItalic.otf in Resources */,
+				61382B05FE4D4BD3940A0D10 /* GothamRounded-Light.otf in Resources */,
+				AE648F0AA7B14F419576EF80 /* GothamRounded-LightItalic.otf in Resources */,
+				CD3293B3C182435C869AAD85 /* GothamRounded-Medium.otf in Resources */,
+				2E87F37590DE4DE190E1A1AD /* GothamRounded-MediumItalic.otf in Resources */,
+				412A0045A8324A65A2A31CDB /* GothamRoundedBold_21016.ttf in Resources */,
+				804B2E89D3F248F7A09DF2B7 /* GothamRoundedBook_21018.ttf in Resources */,
+				639575CD00E54809945EB677 /* GothamRoundedLight_21020.ttf in Resources */,
+				E471C066C09B46C2B6F08F8E /* GothamRoundedMedium_21022.ttf in Resources */,
+				C74AFB2156094F4E942E4B70 /* Lato-Black.ttf in Resources */,
+				C7AA83463F02463CB0EDD6F0 /* Lato-BlackItalic.ttf in Resources */,
+				5AEA9B9356044C5AACCB8744 /* Lato-Bold.ttf in Resources */,
+				8DD5BDA0F59E4FD8946A38A9 /* Lato-BoldItalic.ttf in Resources */,
+				59D51294A8524525AD45235C /* Lato-Italic.ttf in Resources */,
+				8F9ED2A8A51B437986F6649A /* Lato-Light.ttf in Resources */,
+				95D15C2E80C44A8ABF89A44A /* Lato-LightItalic.ttf in Resources */,
+				982377ACD1F2425294CC5489 /* Lato-Regular.ttf in Resources */,
+				E07E5811F3844CCEB104D259 /* Lato-Thin.ttf in Resources */,
+				AD3D46E2BFCE4266874F024D /* Lato-ThinItalic.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

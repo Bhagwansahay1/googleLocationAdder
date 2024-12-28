@@ -175,6 +175,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#EF6C00",
         marginLeft: 8,
+        fontFamily: "GothamRounded-Medium",
+        fontWeight: 325,
     },
 });
 

@@ -17,11 +17,14 @@ import PetNameIcon from '../assets/icons/petNameIcon.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ScrollView } from 'react-native-gesture-handler';
 import CustomCheckbox from '../components/CustomCheckbox';
-import { v4 as uuidv4 } from 'uuid';
+import HouseFillIcon from '../assets/icons/houseFill.svg';
+import OfficeIcon from '../assets/icons/work.svg';
+import MapPinBlackIcon from '../assets/icons/mapPinBlack.svg';
+import uuid from 'react-native-uuid';
 
 const ConfirmLocation = ({ route, navigation }) => {
   const { addressText, placeId, isAutocomplete, addressData, savedAddress } = route.params || {};
-  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
+  const [location, setLocation] = useState(null);
   const [address, setAddress] = useState({ main: '', sub: '' });
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [selectedAddressType, setSelectedAddressType] = useState("Home");
@@ -48,17 +51,25 @@ const ConfirmLocation = ({ route, navigation }) => {
     { placeholder: 'Your pet name', value: receiverDetails.petName, IconComponent: PetNameIcon, onChangeText: (value) => setReceiverDetails({ ...receiverDetails, petName: value }) },
   ];
 
+  const addressTypes = [
+    { label: 'Home', IconComponent: HouseFillIcon },
+    { label: 'Work', IconComponent: OfficeIcon },
+    { label: 'Other', IconComponent: MapPinBlackIcon }
+  ];
+
   const bottomSheetRef = useRef(null);
-  const snapPoints = useMemo(() => ['25%', '95%'], []);
+  const snapPoints = useMemo(() => ['30%', '95%'], []);
 
   useEffect(() => {
+    console.log("userEffect call",savedAddress);
     if (savedAddress) {
-      const { main, sub, details, receiver, location, isDefault } = savedAddress;
+      const { main, sub, details, receiver, location, isDefault, addressType } = savedAddress;
       setAddress({ main, sub });
       setAddressDetails(details || {});
       setReceiverDetails(receiver || {});
       setLocation(location);
       setDefaultAddressCheckBox(isDefault);
+      setSelectedAddressType(addressType);
     }
     else if (isAutocomplete && placeId) {
       fetchPlaceDetails(placeId);
@@ -156,8 +167,9 @@ const ConfirmLocation = ({ route, navigation }) => {
   };
 
   const handleSaveAddress = async () => {
+    try {
     const newAddress = {
-      id: savedAddress?.id || uuidv4(),
+      id: savedAddress?.id || uuid.v4(),
       main: address.main,
       sub: address.sub,
       details: addressDetails,
@@ -166,34 +178,32 @@ const ConfirmLocation = ({ route, navigation }) => {
       addressType: selectedAddressType,
       location,
     };
-  
-    try {
       const storedAddresses = await AsyncStorage.getItem('addresses');
       let updatedAddresses = storedAddresses ? JSON.parse(storedAddresses) : [];
-  
+
       if (newAddress.isDefault) {
         updatedAddresses = updatedAddresses.map((address) => ({
           ...address,
           isDefault: false,
         }));
       }
-  
+
       const existingIndex = updatedAddresses.findIndex((address) => address.id === newAddress.id);
       if (existingIndex !== -1) {
         updatedAddresses[existingIndex] = newAddress;
       } else {
         updatedAddresses.push(newAddress);
       }
-  
+
       await AsyncStorage.setItem('addresses', JSON.stringify(updatedAddresses));
-  
+
       alert('Address saved successfully!');
       navigation.navigate('AddressList');
     } catch (error) {
       console.error('Error saving address:', error);
     }
   };
-  
+
 
   const handleAddressTypeChange = (type) => {
     setSelectedAddressType(type);
@@ -210,7 +220,7 @@ const ConfirmLocation = ({ route, navigation }) => {
     >
       <View style={styles.container}>
         <MapView
-          key={location ? `${location.latitude}-${location.longitude}` : 'initial-map'}
+          key={location && `${location.latitude}-${location.longitude}`}
           style={styles.map}
           initialRegion={{
             latitude: location.latitude,
@@ -237,16 +247,19 @@ const ConfirmLocation = ({ route, navigation }) => {
           <BottomSheetView style={styles.addressDetails}>
             <ScrollView>
               <View style={styles.addressContainer}>
-                <View style={styles.iconAndText}>
+                <View>
                   <LocationPin style={styles.icon} />
-                  <View>
-                    <Text style={styles.addressText}>{address.main}</Text>
-                    <Text style={styles.addressSubText}>{address.sub}</Text>
-                  </View>
                 </View>
-                <TouchableOpacity style={styles.changeButton} onPress={() => navigation.goBack()}>
-                  <Text style={styles.changeButtonText}>Change</Text>
-                </TouchableOpacity>
+                <View style={styles.addressTextContainer}>
+                  <Text style={styles.addressText}>{address.main}</Text>
+                  <Text style={styles.addressSubText}>{address.sub}</Text>
+                </View>
+                <View>
+                  <TouchableOpacity style={styles.changeButton} onPress={() => navigation.goBack()}>
+                    <Text style={styles.changeButtonText}>Change</Text>
+                  </TouchableOpacity>
+                </View>
+
               </View>
               {!showAddressForm ? (
                 <CustomButton
@@ -268,22 +281,23 @@ const ConfirmLocation = ({ route, navigation }) => {
                   <View style={styles.saveAsContainer}>
                     <Text style={styles.saveAsText}>Save address as</Text>
                     <View style={styles.saveAsOptions}>
-                      {['Home', 'Office', 'Others'].map((type) => (
+                      {addressTypes.map((type) => (
                         <TouchableOpacity
-                          key={type}
+                          key={type.label}
                           style={[
                             styles.saveOption,
-                            selectedAddressType === type && styles.selectedOption,
+                            selectedAddressType === type.label && styles.selectedOption,
                           ]}
-                          onPress={() => handleAddressTypeChange(type)}
+                          onPress={() => handleAddressTypeChange(type.label)}
                         >
+                          <type.IconComponent />
                           <Text
                             style={[
                               styles.optionText,
-                              selectedAddressType === type && styles.selectedOptionText,
+                              selectedAddressType === type.label && styles.selectedOptionText,
                             ]}
                           >
-                            {type}
+                            {type.label}
                           </Text>
                         </TouchableOpacity>
                       ))}
@@ -335,46 +349,52 @@ const styles = StyleSheet.create({
   },
   addressContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    width: '100%',
     justifyContent: 'space-between',
     marginBottom: 16,
   },
-  iconAndText: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  addressTextContainer: {
+    flexDirection: 'column',
+    width: '70%',
   },
   icon: {
     marginRight: 8,
   },
   selectedOptionText: {
-    color: '#fff',
+    color: '#EF6C00',
   },
   selectedOption: {
-    backgroundColor: '#FF5722',
-    borderColor: '#FF5722',
+    backgroundColor: '#FFEAD8',
+    borderColor: '#EF6C00',
+    borderRadius: 4,
+    borderWidth: .4,
   },
   optionText: {
-    color: '#333',
+    color: '#374151',
+    fontFamily: 'GothamRounded-Medium',
+    fontSize: 12,
   },
   addressText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontFamily: 'GothamRounded-Bold',
   },
   addressSubText: {
     fontSize: 14,
-    color: '#666',
+    color: '#6B7280',
+    fontFamily: 'Lato-Regular',
+    fontWeight: 400,
   },
   changeButton: {
     paddingVertical: 4,
-    paddingHorizontal: 12,
-    backgroundColor: '#FF5722',
-    borderRadius: 16,
+    paddingHorizontal: 8,
+    backgroundColor: '#FFEEE6',
+    borderRadius: 4,
   },
   changeButtonText: {
-    fontSize: 14,
-    color: '#fff',
-    fontWeight: 'bold',
+    fontSize: 12,
+    color: '#EF6C00',
+    fontWeight: 350,
+    fontFamily: 'GothamRounded-Medium',
   },
   formContainer: {
     marginTop: 16,
@@ -384,15 +404,20 @@ const styles = StyleSheet.create({
   },
   saveAsText: {
     fontSize: 14,
-    color: '#333',
+    color: '#000000',
     marginBottom: 8,
-    fontWeight: 'bold',
+    fontWeight: 325,
+    fontFamily: 'GothamRounded-Medium',
   },
   saveAsOptions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   saveOption: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     padding: 8,
     borderWidth: 1,
     borderColor: '#ddd',

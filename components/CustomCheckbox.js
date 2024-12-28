@@ -37,6 +37,9 @@ const styles = StyleSheet.create({
     defaultAddressText: {
         fontSize: 14,
         marginLeft: 8,
+        fontFamily: "Lato-Regular",
+        fontWeight: 400,
+        color: "#000000",
     },
 });
 

@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#ffffff',
     paddingHorizontal: 16,
+    paddingVertical: 4,
     marginBottom: 12,
   },
   inputIcon: {
@@ -30,8 +31,8 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    fontSize: 14,
-    color: '#333',
+    fontSize: 12,
+    fontFamily: 'Lato-Regular',
   },
 });
 

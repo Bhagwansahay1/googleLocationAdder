@@ -34,8 +34,9 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#FFFFFF',
-    fontWeight: 325,
-    fontSize: 16,
+    fontWeight: 350,
+    fontSize: 14,
+    fontFamily: 'GothamRounded-Regular',
   },
 });
 

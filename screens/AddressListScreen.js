@@ -19,21 +19,28 @@ const AddressListScreen = ({ navigation }) => {
     }
   };
 
-  const deleteAddress = async (index) => {
-    try {
-      const updatedAddresses = addresses.filter((_, i) => i !== index);
-      await AsyncStorage.setItem('addresses', JSON.stringify(updatedAddresses));
-      setAddresses(updatedAddresses);
-    } catch (error) {
-      console.error('Error deleting address:', error);
-    }
-  };
-
-  const confirmDelete = (index) => {
-    Alert.alert('Delete Address', 'Are you sure?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', onPress: () => deleteAddress(index) },
-    ]);
+  const handleDeleteAddress = async (id) => {
+    Alert.alert(
+      'Delete Address',
+      'Are you sure you want to delete this address?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const updatedAddresses = addresses.filter((address) => address.id !== id);
+              await AsyncStorage.setItem('addresses', JSON.stringify(updatedAddresses));
+              setAddresses(updatedAddresses);
+              Alert.alert('Success', 'Address deleted successfully!');
+            } catch (error) {
+              console.error('Error deleting address:', error);
+            }
+          },
+        },
+      ]
+    );
   };
 
   const renderItem = ({ item, index }) => (
@@ -43,7 +50,7 @@ const AddressListScreen = ({ navigation }) => {
     >
       <Text style={styles.addressText}>{item.main}</Text>
       <Text style={styles.addressSubText}>{item.sub}</Text>
-      <CustomButton title="Delete" onPress={() => confirmDelete(index)} size='small'/>
+      <CustomButton title="Delete" onPress={() => handleDeleteAddress(item.id)} size='small'/>
     </TouchableOpacity>
   );
 
@@ -66,9 +73,8 @@ const AddressListScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16 },
   addressItem: { padding: 16, marginBottom: 8, backgroundColor: '#f9f9f9', borderRadius: 8 },
-  addressText: { fontSize: 16, color: '#333' },
-  addressSubText: { fontSize: 14, color: '#666', marginBottom: 8 },
-  deleteText: { color: 'red', marginTop: 4 },
+  addressText: { fontSize: 16, color: '#000000', fontFamily: 'GothamRounded-Medium' },
+  addressSubText: { fontSize: 14, color: '#666', marginBottom: 8, fontFamily: 'Lato-Regular' },
   emptyText: { textAlign: 'center', color: '#666' },
 });
 

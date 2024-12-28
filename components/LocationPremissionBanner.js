@@ -95,14 +95,17 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     permissionTitle: {
-        flex: 1,
         fontSize: 12,
-        fontWeight: "500",
+        fontWeight: 350,
         color: "#1B281B",
+        fontFamily: "GothamRounded-Bold",
     },
     permissionSubtitle: {
         fontSize: 10,
         color: "#142E1599",
+        fontFamily: "Lato-Regular",
+        fontWeight: 400,
+        lineHeight: 12,
     },
     modalOverlay: {
         flex: 1,
@@ -132,14 +135,17 @@ const styles = StyleSheet.create({
     },
     modalTitle: {
         fontSize: 14,
-        fontWeight: "600",
-        color: "#1B281B",
+        fontWeight: 400,
+        color: "#182035",
+        fontFamily: "GothamRounded-Bold",
     },
     modalMessage: {
         fontSize: 12,
-        color: "#142E1599",
+        color: "#606268",
         textAlign: "center",
-        marginBottom: 16,
+        marginBottom: 12,
+        fontFamily: "Lato-Regular",
+        fontWeight: 400,
     },
     divider: {
         width: "100%",
@@ -164,8 +170,10 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     stepText: {
-        fontSize: 12,
-        color: "#1B281B",
+        fontSize: 10,
+        color: "#000",
+        fontFamily: "Lato-Regular",
+        letterSpacing: 0.1,
     },
     groupLayout: {
         height: 60,
