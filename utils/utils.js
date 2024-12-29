@@ -40,7 +40,7 @@ export const fetchPlaceDetails = async (placeId) => {
         const { lat, lng } = response.data.result.geometry.location;
         const formattedAddress = response.data.result.formatted_address || 'Unknown Address';
         return {
-            location: { latitude: lat, longitude: lng },
+            locationData: { latitude: lat, longitude: lng },
             address: { main: formattedAddress, sub: formattedAddress },
         };
     } catch (error) {

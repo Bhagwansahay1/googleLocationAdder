@@ -77,6 +77,7 @@ const ConfirmLocation = ({ route, navigation }) => {
   const snapPoints = useMemo(() => ['30%', '95%'], []);
 
   useEffect(() => {
+    console.log("here is the saved address", savedAddress,isAutocomplete, placeId);
     if (savedAddress) {
       const { main, sub, details, receiver, location, isDefault, addressType } = savedAddress;
       setAddress({ main, sub });
@@ -87,8 +88,10 @@ const ConfirmLocation = ({ route, navigation }) => {
       setSelectedAddressType(addressType);
     }
     else if (isAutocomplete && placeId) {
-      fetchPlaceDetails(placeId).then(({ location, address }) => {
-        setLocation(location);
+      fetchPlaceDetails(placeId).then(({ locationData, address }) => {
+        console.log("here is the location", location, address);
+        console.log("here is the address",locationData );
+        setLocation(locationData);
         setAddress(address);
       });
     } else if (addressData) {
@@ -102,7 +105,7 @@ const ConfirmLocation = ({ route, navigation }) => {
           sub: locationData.sub
         });
       });
-    } else {
+    } else if (!savedAddress && !isAutocomplete && !addressData) {
       fetchCurrentLocation().then(location => {
         setLocation(location);
         fetchAddress(location.latitude, location.longitude).then(address => setAddress(address));
@@ -173,8 +176,11 @@ const ConfirmLocation = ({ route, navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View style={styles.container}>
-        <MapView
-          key={location && `${location.latitude}-${location.longitude}`}
+        {location && (
+          <View style={styles.mapContainer}>
+            <MapView
+            // tracksViewChanges={true}
+            key={`${location.latitude}-${location.longitude}`}
           style={styles.map}
           initialRegion={{
             latitude: location.latitude,
@@ -191,6 +197,8 @@ const ConfirmLocation = ({ route, navigation }) => {
             onDragEnd={handleMarkerDragEnd}
           />
         </MapView>
+          </View>
+        )}
         <BottomSheet
           ref={bottomSheetRef}
           snapPoints={snapPoints}
@@ -283,6 +291,9 @@ const ConfirmLocation = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  mapContainer: {
     flex: 1,
   },
   map: {
