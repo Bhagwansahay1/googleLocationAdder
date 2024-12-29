@@ -2,6 +2,21 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 # Getting Started
 
+# First Step 
+
+Please create a env file and put 
+GOOGLE_MAP_API_KEY=Your google api key
+IP_GEO_API_KEY=Your geo ip api key
+
+# Second Step
+
+Please run commend 
+npm install
+
+# Third Step
+
+npx react-native start
+
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
 ## Step 1: Start the Metro Server
