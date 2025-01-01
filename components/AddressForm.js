@@ -12,19 +12,24 @@ export const AddressForm = ({
   handleAddressTypeChange,
   defaultAddressCheckBox,
   setDefaultAddressCheckBox,
-  handleSaveAddress
+  handleSaveAddress,
+  formErrors
 }) => {
   return (
     <View style={styles.formContainer}>
       <Text style={styles.saveAsText}>Enter complete address</Text>
       {addressInputs.map((input, index) => (
-        <InputWithIcon
-          key={index}
-          placeholder={input.placeholder}
-          IconComponent={input.IconComponent}
-          value={input.value}
-          onChangeText={input.onChangeText}
-        />
+        <View key={index}>
+          <InputWithIcon
+            placeholder={input.placeholder}
+            IconComponent={input.IconComponent}
+            value={input.value}
+            onChangeText={input.onChangeText}
+            keyboardType={input.keyboardType}
+            maxLength={input.maxLength}
+            isError={formErrors[input.name]}
+          />
+        </View>
       ))}
       <View style={styles.saveAsContainer}>
         <Text style={styles.saveAsText}>Save address as</Text>
@@ -52,13 +57,17 @@ export const AddressForm = ({
         </View>
       </View>
       {receiverInputs.map((input, index) => (
-        <InputWithIcon
-          key={index}
-          placeholder={input.placeholder}
-          IconComponent={input.IconComponent}
-          value={input.value}
-          onChangeText={input.onChangeText}
-        />
+        <View key={index}>
+          <InputWithIcon
+            placeholder={input.placeholder}
+            IconComponent={input.IconComponent}
+            value={input.value}
+            onChangeText={input.onChangeText}
+            keyboardType={input.keyboardType}
+            maxLength={input.maxLength}
+            isError={formErrors[input.name]}
+          />
+        </View>
       ))}
       <CustomCheckbox
         value={defaultAddressCheckBox}

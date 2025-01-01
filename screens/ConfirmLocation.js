@@ -10,6 +10,7 @@ import { AddressHeader } from '../components/AddressHeader';
 import { AddressForm } from '../components/AddressForm';
 import { createAddressInputs, createReceiverInputs } from '../utils/constants';
 import CustomButton from '../components/CustomButton';
+import { fetchAddress } from '../utils/utils';
 
 const ConfirmLocation = ({ route, navigation }) => {
   const [mapKey, setMapKey] = useState(0);
@@ -17,6 +18,7 @@ const ConfirmLocation = ({ route, navigation }) => {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [selectedAddressType, setSelectedAddressType] = useState("Home");
   const [defaultAddressCheckBox, setDefaultAddressCheckBox] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const [addressDetails, setAddressDetails] = useState({
     houseNumber: "",
     buildingName: "",
@@ -41,6 +43,37 @@ const ConfirmLocation = ({ route, navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
+  const validateForm = () => {
+    const errors = {};
+    
+    // Validate address details
+    if (!addressDetails.houseNumber.trim()) {
+      errors.houseNumber = 'House/Flat no. is required';
+    }
+    if (!addressDetails.buildingName.trim()) {
+      errors.buildingName = 'Building name is required';
+    }
+    if (!addressDetails.landmark.trim()) {
+      errors.landmark = 'Landmark is required';
+    }
+
+    // Validate receiver details
+    if (!receiverDetails.receiverName.trim()) {
+      errors.receiverName = 'Name is required';
+    }
+    if (!receiverDetails.receiverMobile.trim()) {
+      errors.receiverMobile = 'Mobile number is required';
+    } else if (!/^\d{10}$/.test(receiverDetails.receiverMobile)) {
+      errors.receiverMobile = 'Please enter a valid 10-digit mobile number';
+    }
+    if (!receiverDetails.petName.trim()) {
+      errors.petName = 'Pet name is required';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleMarkerDragEnd = useCallback(async (event) => {
     const { latitude, longitude } = event.nativeEvent.coordinate;
     setLocation({ latitude, longitude });
@@ -58,6 +91,10 @@ const ConfirmLocation = ({ route, navigation }) => {
   };
 
   const handleSaveAddress = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       const newAddress = {
         id: route.params?.savedAddress?.id || uuid.v4(),
@@ -137,6 +174,7 @@ const ConfirmLocation = ({ route, navigation }) => {
                   defaultAddressCheckBox={defaultAddressCheckBox}
                   setDefaultAddressCheckBox={setDefaultAddressCheckBox}
                   handleSaveAddress={handleSaveAddress}
+                  formErrors={formErrors}
                 />
               )}
             </ScrollView>

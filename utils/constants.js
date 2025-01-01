@@ -16,18 +16,21 @@ export const addressTypes = [
 
 export const createAddressInputs = (addressDetails, setAddressDetails) => [
   {
+    name: 'houseNumber',
     placeholder: 'House/Flat no.',
     value: addressDetails.houseNumber,
     IconComponent: HomeIcon,
     onChangeText: (value) => setAddressDetails({ ...addressDetails, houseNumber: value })
   },
   {
+    name: 'buildingName',
     placeholder: 'Building name',
     value: addressDetails.buildingName,
     IconComponent: BuildingIcon,
     onChangeText: (value) => setAddressDetails({ ...addressDetails, buildingName: value })
   },
   {
+    name: 'landmark',
     placeholder: 'Landmark',
     value: addressDetails.landmark,
     IconComponent: LandmarkIcon,
@@ -37,18 +40,23 @@ export const createAddressInputs = (addressDetails, setAddressDetails) => [
 
 export const createReceiverInputs = (receiverDetails, setReceiverDetails) => [
   {
-    placeholder: 'Your name',
+    name: 'receiverName',
+    placeholder: 'Receiver name',
     value: receiverDetails.receiverName,
     IconComponent: UserIcon,
     onChangeText: (value) => setReceiverDetails({ ...receiverDetails, receiverName: value })
   },
   {
-    placeholder: 'Your mobile no.',
+    name: 'receiverMobile',
+    placeholder: "Receiver's mobile no.",
     value: receiverDetails.receiverMobile,
     IconComponent: PhoneIcon,
-    onChangeText: (value) => setReceiverDetails({ ...receiverDetails, receiverMobile: value })
+    onChangeText: (value) => setReceiverDetails({ ...receiverDetails, receiverMobile: value }),
+    keyboardType: 'numeric',
+    maxLength: 10
   },
   {
+    name: 'petName',
     placeholder: 'Your pet name',
     value: receiverDetails.petName,
     IconComponent: PetNameIcon,
