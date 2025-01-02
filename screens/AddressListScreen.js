@@ -1,25 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, StyleSheet, FlatList, Alert, BackHandler } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomButton from '../components/CustomButton';
+import AddressItem from '../components/AddressItem';
+import EmptyState from '../components/EmptyState';
+import { sortAddresses } from '../utils/utils';
+import Header from '../components/Header';
 
 const AddressListScreen = ({ navigation }) => {
   const [addresses, setAddresses] = useState([]);
 
-  useEffect(() => {
-    loadAddresses();
-  }, []);
-
-  const loadAddresses = async () => {
+  const loadAddresses = useCallback(async () => {
     try {
       const storedAddresses = await AsyncStorage.getItem('addresses');
-      setAddresses(storedAddresses ? JSON.parse(storedAddresses) : []);
+      const parsedAddresses = storedAddresses ? JSON.parse(storedAddresses) : [];
+      console.log(parsedAddresses, 'parsedAddresses');
+      setAddresses(sortAddresses(parsedAddresses));
     } catch (error) {
       console.error('Error loading addresses:', error);
+      Alert.alert('Error', 'Failed to load addresses');
     }
-  };
+  }, []);
 
-  const handleDeleteAddress = async (id) => {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', loadAddresses);
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      handleBackPress();
+      return true;
+    });
+
+    return () => {
+      unsubscribe();
+      backHandler.remove();
+    };
+  }, [navigation, loadAddresses]);
+
+  const handleDeleteAddress = async (addressId) => {
     Alert.alert(
       'Delete Address',
       'Are you sure you want to delete this address?',
@@ -30,12 +46,21 @@ const AddressListScreen = ({ navigation }) => {
           style: 'destructive',
           onPress: async () => {
             try {
-              const updatedAddresses = addresses.filter((address) => address.id !== id);
+              const storedAddresses = await AsyncStorage.getItem('addresses');
+              if (!storedAddresses) return;
+
+              const currentAddresses = JSON.parse(storedAddresses);
+              const updatedAddresses = currentAddresses.filter(
+                (addr) => addr.id !== addressId
+              );
+
               await AsyncStorage.setItem('addresses', JSON.stringify(updatedAddresses));
-              setAddresses(updatedAddresses);
+              
+              setAddresses(sortAddresses(updatedAddresses));
               Alert.alert('Success', 'Address deleted successfully!');
             } catch (error) {
               console.error('Error deleting address:', error);
+              Alert.alert('Error', 'Failed to delete address');
             }
           },
         },
@@ -43,39 +68,56 @@ const AddressListScreen = ({ navigation }) => {
     );
   };
 
-  const renderItem = ({ item, index }) => (
-    <TouchableOpacity
-      style={styles.addressItem}
+  const handleBackPress = () => {
+    Alert.alert(
+      'Exit App',
+      'Are you sure you want to exit the app?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Exit', style: 'destructive', onPress: () => BackHandler.exitApp() },
+      ]
+    );
+  }
+
+
+  const renderItem = useCallback(({ item }) => (
+    <AddressItem
+      address={item}
       onPress={() => navigation.navigate('Confirm Location', { savedAddress: item })}
-    >
-      <Text style={styles.addressText}>{item.main}</Text>
-      <Text style={styles.addressSubText}>{item.sub}</Text>
-      <CustomButton title="Delete" onPress={() => handleDeleteAddress(item.id)} size='small'/>
-    </TouchableOpacity>
-  );
+      onDelete={() => handleDeleteAddress(item.id)}
+    />
+  ), [navigation]);
 
   return (
+    <>
+    <Header title="Address List" isBackIcon={true} onBackPress={handleBackPress} />
     <View style={styles.container}>
       <FlatList
         data={addresses}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        ListEmptyComponent={<Text style={styles.emptyText}>No saved addresses</Text>}
+        ListEmptyComponent={<EmptyState message="No saved addresses" />}
       />
-      <CustomButton
-        onPress={() => navigation.navigate('Add address')}
-        title="Add New Address"
-      />
+      <View style={styles.buttonContainer}>
+        <CustomButton
+          onPress={() => navigation.navigate('Add address')}
+          title="Add New Address"
+        />
+      </View>
     </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  addressItem: { padding: 16, marginBottom: 8, backgroundColor: '#f9f9f9', borderRadius: 8 },
-  addressText: { fontSize: 16, color: '#000000', fontFamily: 'GothamRounded-Medium' },
-  addressSubText: { fontSize: 14, color: '#666', marginBottom: 8, fontFamily: 'Lato-Regular' },
-  emptyText: { textAlign: 'center', color: '#666' },
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#FFFFFF',
+  },
+  buttonContainer: {
+    paddingVertical: 16,
+  },
 });
 
 export default AddressListScreen;

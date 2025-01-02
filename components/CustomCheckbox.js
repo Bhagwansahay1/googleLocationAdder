@@ -15,7 +15,6 @@ const CustomCheckbox = ({ value, onValueChange }) => {
             </TouchableOpacity>
             <Text style={styles.defaultAddressText}>Set as default address</Text>
         </View>
-
     );
 };
 

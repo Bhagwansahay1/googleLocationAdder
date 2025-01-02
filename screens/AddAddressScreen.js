@@ -17,6 +17,7 @@ import AddressManually from "../components/AddressManually";
 import { useLocation } from "../context/LocationContext";
 import LocationPin from "../assets/icons/pin.svg";
 import SearchIcon from "../assets/icons/Search.svg";
+import Header from "../components/Header";
 
 const AddAddressScreen = () => {
     const [searchText, setSearchText] = useState("");
@@ -94,7 +95,9 @@ const AddAddressScreen = () => {
     };
 
     return (
-        isManually ? <AddressManually /> :
+        <>
+        <Header title="Add address" isBackIcon={true} onBackPress={() => navigation.navigate("AddressList")} />
+        {isManually ? <AddressManually /> :
         <KeyboardAvoidingView
             style={styles.container}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -132,6 +135,8 @@ const AddAddressScreen = () => {
                 <Text style={styles.addManuallyText}>Add address manually</Text>
             </TouchableOpacity>
         </KeyboardAvoidingView>
+}
+    </>
     );
 };
 

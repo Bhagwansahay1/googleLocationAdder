@@ -77,14 +77,14 @@ export const LocationProvider = ({ children }) => {
         return () => subscription.remove();
     }, [appState]);
 
-    useEffect(() => {
-        (async () => {
-            const permissionGranted = await checkAndRequestPermission();
-            if (permissionGranted) {
-                fetchUserLocation();
-            }
-        })();
-    }, []);
+    // useEffect(() => {
+    //     (async () => {
+    //         const permissionGranted = await checkAndRequestPermission();
+    //         // if (permissionGranted) {
+    //         //     fetchUserLocation();
+    //         // }
+    //     })();
+    // }, []);
 
     return (
         <LocationContext.Provider

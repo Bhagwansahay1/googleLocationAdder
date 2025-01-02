@@ -49,7 +49,7 @@ function App(): React.JSX.Element {
     <LocationProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={initialRoute}>
+        <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
           <Stack.Screen name="StartScreen" component={StartScreen} />
           <Stack.Screen name="AddressList" component={AddressListScreen} />
           <Stack.Screen name='Add address' component={AddAddressScreen} />

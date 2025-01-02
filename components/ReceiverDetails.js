@@ -13,9 +13,9 @@ const ReceiverDetails = ({ receiverInputs, handleInputChange }) => {
         <Text style={styles.title}>Receiver's details</Text>
       </View>
       <View style={styles.container}>
-        <TextInput style={styles.input} placeholder="Your name" value={receiverName}
+        <TextInput style={styles.input} placeholder="Receiver name" value={receiverName}
           onChangeText={(value) => handleInputChange("receiverName", value, "receiver")} />
-        <TextInput style={styles.input} keyboardType="numeric" maxLength={10} placeholder="Your mobile no." value={receiverMobile}
+        <TextInput style={styles.input} keyboardType="numeric" maxLength={10} placeholder="Receiver's mobile no." value={receiverMobile}
           onChangeText={(value) => validateMobile(value)} />
         <TextInput style={styles.input} placeholder="Your pet's name" value={petName}
           onChangeText={(value) => handleInputChange("petName", value, "receiver")} />
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderRadius: 8,
-    padding: 10,
+    padding: 14,
     marginBottom: 12,
     borderColor: '#EAECF0',
     backgroundColor: '#fff',

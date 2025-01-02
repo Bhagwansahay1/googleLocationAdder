@@ -11,6 +11,7 @@ import { AddressForm } from '../components/AddressForm';
 import { createAddressInputs, createReceiverInputs } from '../utils/constants';
 import CustomButton from '../components/CustomButton';
 import { fetchAddress } from '../utils/utils';
+import Header from '../components/Header';
 
 const ConfirmLocation = ({ route, navigation }) => {
   const [mapKey, setMapKey] = useState(0);
@@ -38,20 +39,31 @@ const ConfirmLocation = ({ route, navigation }) => {
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      setMapKey((prevKey) => prevKey + 1); // Increment the key to force re-render
       if (route.params?.savedAddress) {
         const { location: savedLocation, main, sub } = route.params.savedAddress;
         setLocation(savedLocation);
         setAddress({ main, sub });
+        const { details, receiver, isDefault, addressType } = route.params.savedAddress;;
+        setAddressDetails(details || {});
+        setReceiverDetails(receiver || {});
+        setDefaultAddressCheckBox(isDefault);
+        setSelectedAddressType(addressType);
+      } 
+      else if (route.params?.addressData) {
+        const { addressDetails: newAddressDetails, receiverDetails: newReceiverDetails, isDefault } = route.params.addressData;
+        setAddressDetails(newAddressDetails || {});
+        setReceiverDetails(newReceiverDetails || {});
+        setDefaultAddressCheckBox(isDefault || false);
       }
+      setMapKey((prevKey) => prevKey + 1); // Force re-render of LocationMap
     });
-  
+
     return unsubscribe;
   }, [navigation, route.params, setLocation, setAddress]);
 
   const validateForm = () => {
     const errors = {};
-    
+
     // Validate address details
     if (!addressDetails.houseNumber.trim()) {
       errors.houseNumber = 'House/Flat no. is required';
@@ -143,17 +155,19 @@ const ConfirmLocation = ({ route, navigation }) => {
   }
 
   return (
+    <>
+    <Header title="Confirm Location" isBackIcon={true} onBackPress={()=>navigation.goBack()} />
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View style={styles.container}>
-      {location && (
+        {location && (
           <LocationMap
-          key={mapKey}
-          location={location}
-          onMarkerDragEnd={handleMarkerDragEnd}
-        />
+            key={mapKey}
+            location={location}
+            onMarkerDragEnd={handleMarkerDragEnd}
+          />
         )}
         <BottomSheet
           ref={bottomSheetRef}
@@ -190,6 +204,7 @@ const ConfirmLocation = ({ route, navigation }) => {
         </BottomSheet>
       </View>
     </KeyboardAvoidingView>
+    </>
   );
 };
 

@@ -71,3 +71,12 @@ export const fetchCoordinatesFromAddress = async (addressData) => {
         throw error;
     }
 };
+
+export const sortAddresses = (addresses) => {
+    return [...addresses].sort((a, b) => {
+      if (a.isDefault && !b.isDefault) return -1;
+      if (!a.isDefault && b.isDefault) return 1;
+      
+      return b.id.localeCompare(a.id);
+    });
+  };
