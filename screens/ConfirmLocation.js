@@ -38,10 +38,16 @@ const ConfirmLocation = ({ route, navigation }) => {
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      setMapKey(prev => prev + 1);
+      setMapKey((prevKey) => prevKey + 1); // Increment the key to force re-render
+      if (route.params?.savedAddress) {
+        const { location: savedLocation, main, sub } = route.params.savedAddress;
+        setLocation(savedLocation);
+        setAddress({ main, sub });
+      }
     });
+  
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, route.params, setLocation, setAddress]);
 
   const validateForm = () => {
     const errors = {};
@@ -142,11 +148,13 @@ const ConfirmLocation = ({ route, navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View style={styles.container}>
-        <LocationMap
+      {location && (
+          <LocationMap
+          key={mapKey}
           location={location}
           onMarkerDragEnd={handleMarkerDragEnd}
-          mapKey={mapKey}
         />
+        )}
         <BottomSheet
           ref={bottomSheetRef}
           snapPoints={snapPoints}

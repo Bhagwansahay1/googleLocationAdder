@@ -1,16 +1,13 @@
-import React, { useRef, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import React, { useRef, useEffect, useState } from 'react';
+import { View, StyleSheet, Platform } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
-export const LocationMap = ({ 
-  location, 
-  onMarkerDragEnd,
-  mapKey 
-}) => {
+export const LocationMap = ({ location, onMarkerDragEnd }) => {
   const mapRef = useRef(null);
+  const [isMapReady, setIsMapReady] = useState(false);
 
   useEffect(() => {
-    if (location && mapRef.current) {
+    if (location && mapRef.current && isMapReady) {
       mapRef.current.animateToRegion({
         latitude: location.latitude,
         longitude: location.longitude,
@@ -18,15 +15,15 @@ export const LocationMap = ({
         longitudeDelta: 0.01,
       }, 1000);
     }
-  }, [location]);
+  }, [location, isMapReady]);
 
   if (!location) return null;
 
   return (
-    <View style={styles.mapContainer}>
+    <View style={styles.container}>
       <MapView
+        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         ref={mapRef}
-        key={mapKey}
         style={styles.map}
         initialRegion={{
           latitude: location.latitude,
@@ -34,13 +31,16 @@ export const LocationMap = ({
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
+        onMapReady={() => setIsMapReady(true)}
+        moveOnMarkerPress={false}
+        showsUserLocation
       >
         <Marker
-          key={`${location.latitude}-${location.longitude}-${mapKey}`}
           coordinate={location}
           draggable
-          title="Order will be delivered here"
-          description="Move the pin to change location"
+          tracksViewChanges={false}
+          title="Delivery Location"
+          description="Drag to adjust location"
           onDragEnd={onMarkerDragEnd}
         />
       </MapView>
@@ -49,7 +49,7 @@ export const LocationMap = ({
 };
 
 const styles = StyleSheet.create({
-  mapContainer: {
+  container: {
     flex: 1,
   },
   map: {
