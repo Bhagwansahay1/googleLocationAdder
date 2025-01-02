@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import LocationPin from '../assets/icons/mapPin.svg';
+import LocationPin from '../../assets/icons/mapPin.svg';
 
 export const AddressHeader = ({ address, onChangePress }) => {
   return (

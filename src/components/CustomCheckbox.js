@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
-import CheckboxIcon from "../assets/icons/checkbox.svg";
+import CheckboxIcon from "../../assets/icons/checkbox.svg";
 
 const CustomCheckbox = ({ value, onValueChange }) => {
     return (

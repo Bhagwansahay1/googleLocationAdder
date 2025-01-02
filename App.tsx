@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import StartScreen from './screens/StartScreen';
-import AddAddressScreen from './screens/AddAddressScreen';
-import ConfirmLocation from './screens/ConfirmLocation';
-import { LocationProvider } from './context/LocationContext';
+import StartScreen from './src/screens/StartScreen';
+import AddAddressScreen from './src/screens/AddAddressScreen';
+import ConfirmLocation from './src/screens/ConfirmLocation';
+import { LocationProvider } from './src/context/LocationContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { enableScreens } from 'react-native-screens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AddressListScreen from './screens/AddressListScreen';
+import AddressListScreen from './src/screens/AddressListScreen';
 import { ActivityIndicator, View } from 'react-native';
 
 enableScreens();

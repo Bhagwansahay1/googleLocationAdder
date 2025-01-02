@@ -7,10 +7,10 @@ import {
     Platform,
     Linking,
 } from "react-native";
-import LocationDisableIcon from "../assets/icons/location-disable.svg";
-import DogIcon from "../assets/icons/supertails";
-import LocationIcon from "../assets/icons/location.svg";
-import CheckIcon from "../assets/icons/click.svg";
+import LocationDisableIcon from "../../assets/icons/location-disable.svg";
+import DogIcon from "../../assets/icons/supertails";
+import LocationIcon from "../../assets/icons/location.svg";
+import CheckIcon from "../../assets/icons/click.svg";
 import CustomButton from "./CustomButton";
 
 const LocationPermissionBanner = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import BackArrow from "../assets/icons/backArrow.svg";
+import BackArrow from "../../assets/icons/backArrow.svg";
 
 const Header = ({ title, isBackIcon, onBackPress }) => {
   return (
