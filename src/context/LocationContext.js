@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { PermissionsAndroid, Platform, AppState } from "react-native";
 import Geolocation from "@react-native-community/geolocation";
+import { fetchUserLocationWithIP } from "../utils/utils";
 
 const LocationContext = createContext();
 
@@ -46,7 +47,7 @@ export const LocationProvider = ({ children }) => {
         return false;
     };
 
-    const fetchUserLocation = () => {
+    const fetchUserLocation = async() => {
         if (locationPermissionGranted) {
             Geolocation.getCurrentPosition(
                 (position) => {
@@ -59,6 +60,9 @@ export const LocationProvider = ({ children }) => {
                 },
                 { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
             );
+        } else {
+            const userLocation = await fetchUserLocationWithIP();
+            setUserLocation(userLocation);
         }
     };
 
@@ -76,15 +80,6 @@ export const LocationProvider = ({ children }) => {
         const subscription = AppState.addEventListener("change", handleAppStateChange);
         return () => subscription.remove();
     }, [appState]);
-
-    // useEffect(() => {
-    //     (async () => {
-    //         const permissionGranted = await checkAndRequestPermission();
-    //         // if (permissionGranted) {
-    //         //     fetchUserLocation();
-    //         // }
-    //     })();
-    // }, []);
 
     return (
         <LocationContext.Provider

@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import CustomButton from './CustomButton';
+import { theme } from '../utils/theme';
 
 const AddressItem = ({ address, onPress, onDelete }) => (
-  <TouchableOpacity 
+  <TouchableOpacity
     style={[
       styles.addressItem,
       address.isDefault && styles.defaultAddressItem
-    ]} 
+    ]}
     onPress={onPress}
   >
     <View style={styles.addressContent}>
@@ -24,12 +25,12 @@ const AddressItem = ({ address, onPress, onDelete }) => (
       <Text style={styles.addressText}>{address.main}</Text>
       <Text style={styles.addressSubText}>{address.sub}</Text>
       <View style={styles.buttonContainer}>
-      <CustomButton 
-            title="Delete" 
-            onPress={onDelete} 
-            size='small'
-            style={styles.deleteButton}
-          />
+        <CustomButton
+          title="Delete"
+          onPress={onDelete}
+          size='small'
+          style={styles.deleteButton}
+        />
       </View>
     </View>
   </TouchableOpacity>
@@ -48,9 +49,9 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   defaultAddressItem: {
-    backgroundColor: '#FFEAD8',
+    backgroundColor: theme.colors.peachPuff,
     borderWidth: 1,
-    borderColor: '#EF6C00',
+    borderColor: theme.colors.primary,
   },
   addressContent: {
     flex: 1,
@@ -62,38 +63,33 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  icon: {
-    width: 16,
-    height: 16,
-    marginRight: 4,
-  },
   addressType: {
-    fontSize: 14,
+    fontSize: theme.fontSizes.base,
     color: '#666',
-    fontFamily: 'GothamRounded-Medium',
+    fontFamily: theme.fonts.medium,
   },
   addressText: {
-    fontSize: 16,
-    color: '#000000',
-    fontFamily: 'GothamRounded-Medium',
+    fontSize: theme.fontSizes.lg,
+    color: theme.colors.text.primary,
+    fontFamily: theme.fonts.medium,
     marginBottom: 4,
   },
   addressSubText: {
-    fontSize: 14,
+    fontSize: theme.fontSizes.base,
     color: '#666',
-    fontFamily: 'Lato-Regular',
+    fontFamily: theme.fonts.regular,
   },
   defaultBadge: {
-    backgroundColor: '#EF6C00',
+    backgroundColor: theme.colors.primary,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 12,
     marginLeft: 8,
   },
   defaultText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontFamily: 'GothamRounded-Medium',
+    color: theme.colors.white,
+    fontSize: theme.fontSizes.sm,
+    fontFamily: theme.fonts.medium,
   },
   buttonContainer: {
     flexDirection: 'row',

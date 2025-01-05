@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { theme } from '../utils/theme';
 
 export const EmptyState = ({ message }) => (
   <View style={styles.container}>
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
-    fontFamily: 'Lato-Regular',
+    fontFamily: theme.fonts.regular,
   },
 });
 

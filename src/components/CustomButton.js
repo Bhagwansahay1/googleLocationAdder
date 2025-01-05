@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { theme } from '../utils/theme';
 
 const CustomButton = ({ size = 'full', title = 'Button', onPress }) => {
   return (
@@ -18,7 +19,7 @@ const CustomButton = ({ size = 'full', title = 'Button', onPress }) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#EF6C00',
+    backgroundColor: theme.colors.primary,
     paddingVertical: 12,
     borderRadius: 5,
     justifyContent: 'center',
@@ -33,10 +34,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   text: {
-    color: '#FFFFFF',
+    color: theme.colors.white,
     fontWeight: 350,
-    fontSize: 14,
-    fontFamily: 'GothamRounded-Regular',
+    fontSize: theme.fontSizes.base,
+    fontFamily: theme.fonts.regularGotham,
   },
 });
 

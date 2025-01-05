@@ -23,19 +23,19 @@ export const LocationMap = ({ location, onMarkerDragEnd }) => {
       setCurrentLocation(location);
       setMarkerKey((prevKey) => prevKey + 1);
     }
-  }, [location,isFocused]);
+  }, [location, isFocused]);
 
   useEffect(() => {
     setCurrentLocation(location);
   }, [location]);
 
-  console.log(currentLocation,"currentLocation")
+  console.log(currentLocation, "currentLocation")
 
   if (!location) return null;
 
   return (
     <View style={styles.container}>
-     {currentLocation &&  <MapView
+      {currentLocation && <MapView
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         ref={mapRef}
         style={styles.map}
@@ -49,12 +49,12 @@ export const LocationMap = ({ location, onMarkerDragEnd }) => {
         showsUserLocation
       >
         <Marker
-          // key={markerKey} // Force the marker to re-render
           coordinate={{
             latitude: currentLocation.latitude,
-            longitude: currentLocation.longitude,}}
+            longitude: currentLocation.longitude,
+          }}
           draggable
-          tracksViewChanges={false} // Improve performance on Android
+          tracksViewChanges={false}
           title="Delivery Location"
           description="Drag to adjust location"
           onDragEnd={onMarkerDragEnd}

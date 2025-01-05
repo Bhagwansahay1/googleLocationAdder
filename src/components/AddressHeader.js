@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import LocationPin from '../../assets/icons/mapPin.svg';
+import { theme } from '../utils/theme';
 
 export const AddressHeader = ({ address, onChangePress }) => {
   return (
@@ -36,13 +37,13 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   addressText: {
-    fontSize: 16,
-    fontFamily: 'GothamRounded-Bold',
+    fontSize: theme.fontSizes.lg,
+    fontFamily: theme.fonts.bold,
   },
   addressSubText: {
-    fontSize: 14,
-    color: '#6B7280',
-    fontFamily: 'Lato-Regular',
+    fontSize: theme.fontSizes.base,
+    color: theme.colors.text.secondary,
+    fontFamily: theme.fonts.regular,
     fontWeight: '400',
   },
   changeButton: {
@@ -52,9 +53,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   changeButtonText: {
-    fontSize: 12,
-    color: '#EF6C00',
+    fontSize: theme.fontSizes.sm,
+    color: theme.colors.primary,
     fontWeight: '350',
-    fontFamily: 'GothamRounded-Medium',
+    fontFamily: theme.fonts.medium,
   },
 });

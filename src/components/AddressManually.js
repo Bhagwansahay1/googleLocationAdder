@@ -5,7 +5,6 @@ import {
     KeyboardAvoidingView,
     ScrollView,
     Platform,
-    Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import AddressDetails from "./AddressDetails";
@@ -14,6 +13,8 @@ import LocationPermissionBanner from "./LocationPremissionBanner";
 import CustomButton from "./CustomButton";
 import CustomCheckbox from "./CustomCheckbox";
 import { useLocation } from "../context/LocationContext";
+import { fetchCityAndState } from "../utils/utils";
+import { theme } from "../utils/theme";
 
 const AddressManually = () => {
     const [defaultAddressCheckBox, setDefaultAddressCheckBox] = useState(false);
@@ -33,11 +34,16 @@ const AddressManually = () => {
     const navigation = useNavigation();
     const { locationPermissionGranted } = useLocation();
 
-    const handleInputChange = (field, value, type = "address") => {
+    const handleInputChange = async (field, value, type = "address") => {
         if (type === "address") {
             setAddressDetails((prev) => ({ ...prev, [field]: value }));
             if (field === "pincode" && value.length === 6) {
-                fetchCityAndState(value);
+                const { city, state } = await fetchCityAndState(value);
+                setAddressDetails((prev) => ({
+                    ...prev,
+                    city,
+                    state,
+                }));
             }
         } else {
             setReceiverDetails((prev) => ({ ...prev, [field]: value }));
@@ -54,24 +60,6 @@ const AddressManually = () => {
         });
     };
 
-    const fetchCityAndState = async (pincode) => {
-        try {
-            const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
-            const data = await response.json();
-            if (data[0].Status === "Success") {
-                const { District, State } = data[0].PostOffice[0];
-                setAddressDetails((prev) => ({
-                    ...prev,
-                    city: District,
-                    state: State,
-                }));
-            } else {
-                Alert.alert("Invalid Pincode", "Please enter a valid pincode.");
-            }
-        } catch (error) {
-            console.error("Error fetching city and state:", error);
-        }
-    };
     return (
         <KeyboardAvoidingView
             style={styles.container}
@@ -98,7 +86,7 @@ const AddressManually = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F5F6FB",
+        backgroundColor: theme.colors.background,
     },
     scrollViewContainer: {
         flexGrow: 1,
@@ -106,22 +94,9 @@ const styles = StyleSheet.create({
     addressContainer: {
         padding: 16,
     },
-    headerContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginBottom: 20,
-    },
-    headerText: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginLeft: 8,
-    },
     bottomContainer: {
-        backgroundColor: "#FFFFFF",
+        backgroundColor: theme.colors.white,
         padding: 16,
-    },
-    checkbox: {
-        alignSelf: 'center',
     },
 });
 

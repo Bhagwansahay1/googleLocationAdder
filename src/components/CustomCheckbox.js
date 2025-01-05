@@ -1,6 +1,7 @@
 import React from "react";
 import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
 import CheckboxIcon from "../../assets/icons/checkbox.svg";
+import { theme } from "../utils/theme";
 
 const CustomCheckbox = ({ value, onValueChange }) => {
     return (
@@ -34,11 +35,11 @@ const styles = StyleSheet.create({
         marginVertical: 12,
     },
     defaultAddressText: {
-        fontSize: 14,
+        fontSize: theme.fontSizes.base,
         marginLeft: 8,
-        fontFamily: "Lato-Regular",
+        fontFamily: theme.fonts.regular,
         fontWeight: 400,
-        color: "#000000",
+        color: theme.colors.text.primary,
     },
 });
 

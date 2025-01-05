@@ -43,10 +43,10 @@ const getCurrentPosition = () => {
     Geolocation.getCurrentPosition(
       position => resolve(position),
       error => reject(error),
-      { 
-        enableHighAccuracy: true, 
-        timeout: 15000, 
-        maximumAge: 10000 
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000
       }
     );
   });
@@ -76,18 +76,17 @@ export const useLocationInitialization = (params) => {
           newAddress = address;
         } else if (addressData) {
           const locationData = await fetchCoordinatesFromAddress(addressData.addressDetails);
-          newLocation = { 
-            latitude: locationData.latitude, 
-            longitude: locationData.longitude 
+          newLocation = {
+            latitude: locationData.latitude,
+            longitude: locationData.longitude
           };
           newAddress = {
             main: locationData.main,
             sub: locationData.sub
           };
         } else {
-          // Handle current location with proper error handling
           const hasPermission = await requestLocationPermission();
-          
+
           if (!hasPermission) {
             Alert.alert(
               'Location Permission Required',
@@ -149,7 +148,7 @@ export const useLocationInitialization = (params) => {
     return () => {
       isMounted = false;
     };
-  }, [params]); 
+  }, [params]);
 
   return { location, setLocation, address, setAddress, isLoading };
 };

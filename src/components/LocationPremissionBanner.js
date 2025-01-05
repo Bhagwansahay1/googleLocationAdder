@@ -12,6 +12,7 @@ import DogIcon from "../../assets/icons/supertails";
 import LocationIcon from "../../assets/icons/location.svg";
 import CheckIcon from "../../assets/icons/click.svg";
 import CustomButton from "./CustomButton";
+import { theme } from "../utils/theme";
 
 const LocationPermissionBanner = () => {
     const [isModalVisible, setModalVisible] = useState(false);
@@ -87,23 +88,20 @@ const styles = StyleSheet.create({
         padding: 12,
         borderRadius: 8,
     },
-    locationIcon: {
-        marginRight: 8,
-    },
     permissionTextContainer: {
         flex: 1,
         marginLeft: 8,
     },
     permissionTitle: {
-        fontSize: 12,
+        fontSize: theme.fontSizes.sm,
         fontWeight: 350,
         color: "#1B281B",
-        fontFamily: "GothamRounded-Bold",
+        fontFamily: theme.fonts.bold,
     },
     permissionSubtitle: {
         fontSize: 10,
         color: "#142E1599",
-        fontFamily: "Lato-Regular",
+        fontFamily: theme.fonts.regular,
         fontWeight: 400,
         lineHeight: 12,
     },
@@ -115,7 +113,7 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         width: "80%",
-        backgroundColor: "#FFFFFF",
+        backgroundColor: theme.colors.white,
         borderRadius: 16,
         padding: 20,
         alignItems: "center",
@@ -134,17 +132,17 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     modalTitle: {
-        fontSize: 14,
+        fontSize: theme.fontSizes.base,
         fontWeight: 400,
         color: "#182035",
-        fontFamily: "GothamRounded-Bold",
+        fontFamily: theme.fonts.bold,
     },
     modalMessage: {
-        fontSize: 12,
+        fontSize: theme.fontSizes.sm,
         color: "#606268",
         textAlign: "center",
         marginBottom: 12,
-        fontFamily: "Lato-Regular",
+        fontFamily: theme.fonts.regular,
         fontWeight: 400,
     },
     divider: {
@@ -172,7 +170,7 @@ const styles = StyleSheet.create({
     stepText: {
         fontSize: 10,
         color: "#000",
-        fontFamily: "Lato-Regular",
+        fontFamily: theme.fonts.regular,
         letterSpacing: 0.1,
     },
     groupLayout: {

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
+import { theme } from "../utils/theme";
 
 const ReceiverDetails = ({ receiverInputs, handleInputChange }) => {
   const { receiverName, receiverMobile, petName } = receiverInputs;
@@ -13,11 +14,11 @@ const ReceiverDetails = ({ receiverInputs, handleInputChange }) => {
         <Text style={styles.title}>Receiver's details</Text>
       </View>
       <View style={styles.container}>
-        <TextInput style={styles.input} placeholder="Receiver name" value={receiverName}
+        <TextInput style={[styles.input, theme.shadow.input]} placeholder="Receiver name" value={receiverName}
           onChangeText={(value) => handleInputChange("receiverName", value, "receiver")} />
-        <TextInput style={styles.input} keyboardType="numeric" maxLength={10} placeholder="Receiver's mobile no." value={receiverMobile}
+        <TextInput style={[styles.input, theme.shadow.input]} keyboardType="numeric" maxLength={10} placeholder="Receiver's mobile no." value={receiverMobile}
           onChangeText={(value) => validateMobile(value)} />
-        <TextInput style={styles.input} placeholder="Your pet's name" value={petName}
+        <TextInput style={[styles.input, theme.shadow.input]} placeholder="Your pet's name" value={petName}
           onChangeText={(value) => handleInputChange("petName", value, "receiver")} />
       </View>
     </>
@@ -27,32 +28,27 @@ const ReceiverDetails = ({ receiverInputs, handleInputChange }) => {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 20,
-    backgroundColor: "#ffffff",
+    backgroundColor: theme.colors.white,
     borderRadius: 16,
     paddingHorizontal: 8,
     paddingTop: 12,
   },
   title: {
-    fontSize: 14,
+    fontSize: theme.fontSizes.base,
     fontWeight: 325,
     marginBottom: 12,
-    fontFamily: "GothamRounded-Medium",
-    color: "#000000",
+    fontFamily: theme.fonts.medium,
+    color: theme.colors.text.primary,
   },
   input: {
     borderWidth: 1,
     borderRadius: 8,
     padding: 14,
     marginBottom: 12,
-    borderColor: '#EAECF0',
-    backgroundColor: '#fff',
-    shadowColor: 'rgba(67, 71, 77, 0.08)',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.08,
-    shadowRadius: 60,
-    elevation: 5,
-    fontFamily: "Lato-Regular",
-    fontSize: 12,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.white,
+    fontFamily: theme.fonts.regular,
+    fontSize: theme.fontSizes.sm,
   },
 });
 

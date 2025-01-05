@@ -6,6 +6,7 @@ import AddressItem from '../components/AddressItem';
 import EmptyState from '../components/EmptyState';
 import { sortAddresses } from '../utils/utils';
 import Header from '../components/Header';
+import { theme } from '../utils/theme';
 
 const AddressListScreen = ({ navigation }) => {
   const [addresses, setAddresses] = useState([]);
@@ -55,7 +56,7 @@ const AddressListScreen = ({ navigation }) => {
               );
 
               await AsyncStorage.setItem('addresses', JSON.stringify(updatedAddresses));
-              
+
               setAddresses(sortAddresses(updatedAddresses));
               Alert.alert('Success', 'Address deleted successfully!');
             } catch (error) {
@@ -90,21 +91,21 @@ const AddressListScreen = ({ navigation }) => {
 
   return (
     <>
-    <Header title="Address List" isBackIcon={true} onBackPress={handleBackPress} />
-    <View style={styles.container}>
-      <FlatList
-        data={addresses}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        ListEmptyComponent={<EmptyState message="No saved addresses" />}
-      />
-      <View style={styles.buttonContainer}>
-        <CustomButton
-          onPress={() => navigation.navigate('Add address')}
-          title="Add New Address"
+      <Header title="Address List" isBackIcon={true} onBackPress={handleBackPress} />
+      <View style={styles.container}>
+        <FlatList
+          data={addresses}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          ListEmptyComponent={<EmptyState message="No saved addresses" />}
         />
+        <View style={styles.buttonContainer}>
+          <CustomButton
+            onPress={() => navigation.navigate('Add address')}
+            title="Add New Address"
+          />
+        </View>
       </View>
-    </View>
     </>
   );
 };
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.white,
   },
   buttonContainer: {
     paddingVertical: 16,

@@ -4,6 +4,7 @@ import InputWithIcon from './InputWithIcon';
 import CustomCheckbox from './CustomCheckbox';
 import CustomButton from './CustomButton';
 import { addressTypes } from '../utils/constants';
+import { theme } from '../utils/theme';
 
 export const AddressForm = ({
   addressInputs,
@@ -86,11 +87,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   saveAsText: {
-    fontSize: 14,
-    color: '#000000',
+    fontSize: theme.fontSizes.base,
+    color: theme.colors.text.primary,
     marginBottom: 8,
     fontWeight: '325',
-    fontFamily: 'GothamRounded-Medium',
+    fontFamily: theme.fonts.medium,
   },
   saveAsOptions: {
     flexDirection: 'row',
@@ -106,20 +107,20 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 8,
     marginHorizontal: 4,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.white,
   },
   selectedOption: {
-    backgroundColor: '#FFEAD8',
-    borderColor: '#EF6C00',
+    backgroundColor: theme.colors.peachPuff,
+    borderColor: theme.colors.primary,
     borderRadius: 4,
     borderWidth: 0.4,
   },
   optionText: {
     color: '#374151',
-    fontFamily: 'GothamRounded-Medium',
-    fontSize: 12,
+    fontFamily: theme.fonts.medium,
+    fontSize: theme.fontSizes.sm,
   },
   selectedOptionText: {
-    color: '#EF6C00',
+    color: theme.colors.primary,
   },
 });

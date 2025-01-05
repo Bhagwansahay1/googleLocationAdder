@@ -3,6 +3,7 @@ import { View, StyleSheet, PermissionsAndroid, Platform } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { useLocation } from '../context/LocationContext';
 import Header from '../components/Header';
+import { theme } from '../utils/theme';
 
 const StartScreen = ({ navigation }) => {
     const { locationPermissionGranted } = useLocation();
@@ -28,13 +29,13 @@ const StartScreen = ({ navigation }) => {
     };
     return (
         <>
-        <Header title="Start" isBackIcon={false} onBackPress={() => {}} />
-        <View style={styles.container}>
-            <View style={styles.content} />
-            <View style={styles.innerContainer}>
-                <CustomButton title="Add Address" onPress={requestLocationPermission} />
+            <Header title="Start" isBackIcon={false} onBackPress={() => { }} />
+            <View style={styles.container}>
+                <View style={styles.content} />
+                <View style={styles.innerContainer}>
+                    <CustomButton title="Add Address" onPress={requestLocationPermission} />
+                </View>
             </View>
-        </View>
         </>
     );
 };
@@ -42,13 +43,13 @@ const StartScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F6FB',
+        backgroundColor: theme.colors.background,
     },
     content: {
         flex: 1,
     },
     innerContainer: {
-        backgroundColor: "#ffffff",
+        backgroundColor: theme.colors.white,
         padding: 16,
     },
 });

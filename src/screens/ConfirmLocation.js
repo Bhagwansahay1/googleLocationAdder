@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView } from 'react-native';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,8 +10,11 @@ import { AddressHeader } from '../components/AddressHeader';
 import { AddressForm } from '../components/AddressForm';
 import { createAddressInputs, createReceiverInputs } from '../utils/constants';
 import CustomButton from '../components/CustomButton';
-import { fetchAddress } from '../utils/utils';
+import { fetchAddress, fetchPlaceDetails } from '../utils/utils';
 import Header from '../components/Header';
+import { theme } from '../utils/theme';
+import { LocationSearch } from '../components/LocationSearch';
+import SearchSuggestionList from '../components/SearchSuggestionList';
 
 const ConfirmLocation = ({ route, navigation }) => {
   const [mapKey, setMapKey] = useState(0);
@@ -20,6 +23,7 @@ const ConfirmLocation = ({ route, navigation }) => {
   const [selectedAddressType, setSelectedAddressType] = useState("Home");
   const [defaultAddressCheckBox, setDefaultAddressCheckBox] = useState(false);
   const [formErrors, setFormErrors] = useState({});
+  const [suggestions, setSuggestions] = useState([]);
   const [addressDetails, setAddressDetails] = useState({
     houseNumber: "",
     buildingName: "",
@@ -37,7 +41,7 @@ const ConfirmLocation = ({ route, navigation }) => {
   const addressInputs = createAddressInputs(addressDetails, setAddressDetails);
   const receiverInputs = createReceiverInputs(receiverDetails, setReceiverDetails);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       if (route.params?.savedAddress) {
         const { location: savedLocation, main, sub } = route.params.savedAddress;
@@ -48,7 +52,7 @@ const ConfirmLocation = ({ route, navigation }) => {
         setReceiverDetails(receiver || {});
         setDefaultAddressCheckBox(isDefault);
         setSelectedAddressType(addressType);
-      } 
+      }
       else if (route.params?.addressData) {
         const { addressDetails: newAddressDetails, receiverDetails: newReceiverDetails, isDefault } = route.params.addressData;
         setAddressDetails(newAddressDetails || {});
@@ -150,60 +154,77 @@ const ConfirmLocation = ({ route, navigation }) => {
     }
   };
 
+  const handleSelectAddress = async(selectedAddress) => {
+    const { place_id } = selectedAddress;
+    const { locationData, address } = await fetchPlaceDetails(place_id);
+    setLocation(locationData);
+    setAddress(address);
+    setSuggestions([]);
+  };
+
   if (isLoading) {
     return <Text style={styles.loadingText}>Fetching location...</Text>;
   }
 
   return (
     <>
-    <Header title="Confirm Location" isBackIcon={true} onBackPress={()=>navigation.goBack()} />
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <View style={styles.container}>
-        {location && (
-          <LocationMap
-            key={mapKey}
-            location={location}
-            onMarkerDragEnd={handleMarkerDragEnd}
+      <Header title="Confirm Location" isBackIcon={true} onBackPress={() => navigation.goBack()} />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <View style={styles.container}>
+          <View style={styles.locationSearchContaioner}>
+          <LocationSearch
+            setSuggestions={setSuggestions}
+            isEnabledLocationBanner={true}
           />
-        )}
-        <BottomSheet
-          ref={bottomSheetRef}
-          snapPoints={snapPoints}
-          onChange={(index) => {
-            setShowAddressForm(index !== 0);
-          }}
-        >
-          <BottomSheetView style={styles.addressDetails}>
-            <ScrollView>
-              <AddressHeader
-                address={address}
-                onChangePress={() => navigation.goBack()}
-              />
-              {!showAddressForm ? (
-                <CustomButton
-                  title="Add more address details"
-                  onPress={handleAddDetails}
+          {suggestions.length > 0 && (
+            <SearchSuggestionList suggestions={suggestions} handleSelectAddress={handleSelectAddress} />
+          )}
+          </View>
+          {location && (
+            <LocationMap
+              key={mapKey}
+              location={location}
+              onMarkerDragEnd={handleMarkerDragEnd}
+            />
+          )}
+          <BottomSheet
+            ref={bottomSheetRef}
+            snapPoints={snapPoints}
+            onChange={(index) => {
+              setShowAddressForm(index !== 0);
+            }}
+          >
+            <BottomSheetView style={styles.addressDetails}>
+              <ScrollView>
+                <AddressHeader
+                  address={address}
+                  onChangePress={() => navigation.goBack()}
                 />
-              ) : (
-                <AddressForm
-                  addressInputs={addressInputs}
-                  receiverInputs={receiverInputs}
-                  selectedAddressType={selectedAddressType}
-                  handleAddressTypeChange={setSelectedAddressType}
-                  defaultAddressCheckBox={defaultAddressCheckBox}
-                  setDefaultAddressCheckBox={setDefaultAddressCheckBox}
-                  handleSaveAddress={handleSaveAddress}
-                  formErrors={formErrors}
-                />
-              )}
-            </ScrollView>
-          </BottomSheetView>
-        </BottomSheet>
-      </View>
-    </KeyboardAvoidingView>
+                {!showAddressForm ? (
+                  <CustomButton
+                    title="Add more address details"
+                    onPress={handleAddDetails}
+                  />
+                ) : (
+                  <AddressForm
+                    addressInputs={addressInputs}
+                    receiverInputs={receiverInputs}
+                    selectedAddressType={selectedAddressType}
+                    handleAddressTypeChange={setSelectedAddressType}
+                    defaultAddressCheckBox={defaultAddressCheckBox}
+                    setDefaultAddressCheckBox={setDefaultAddressCheckBox}
+                    handleSaveAddress={handleSaveAddress}
+                    formErrors={formErrors}
+                  />
+                )}
+              </ScrollView>
+            </BottomSheetView>
+          </BottomSheet>
+        </View>
+      </KeyboardAvoidingView>
     </>
   );
 };
@@ -216,14 +237,23 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     textAlignVertical: 'center',
-    fontSize: 16,
+    fontSize: theme.fontSizes.lg,
     color: '#888',
   },
   addressDetails: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.white,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
+  },
+  locationSearchContaioner: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    padding: 16,
+    backgroundColor: 'transparent',
   },
 });
 
